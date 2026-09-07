@@ -1276,14 +1276,7 @@ $("#exportBtn").addEventListener("click", async () => {
   const btn = $("#exportBtn"), orig = btn.textContent;
   const flash = t => { btn.textContent = t; setTimeout(()=>btn.textContent=orig, 1500); };
 
-  // 1) artifact hospedado: usa a capability de download da claude.ai
-  if(window.claude && typeof window.claude.use === "function"){
-    try {
-      const dl = await window.claude.use("downloads");
-      if(dl){ await dl.save({ filename:"perimetro-progresso.json", data:json }); flash("salvo ✓"); return; }
-    } catch(e){ if(e && e.code === "declined") return; }
-  }
-  // 2) arquivo local (index.html aberto direto): download por link
+  // 1) download por link (arquivo local ou servido)
   try {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([json],{type:"application/json"}));
@@ -1292,7 +1285,7 @@ $("#exportBtn").addEventListener("click", async () => {
     setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
     flash("baixado ✓"); return;
   } catch(e){}
-  // 3) último recurso: copia ao clipboard
+  // 2) último recurso: copia ao clipboard
   if(navigator.clipboard){ navigator.clipboard.writeText(json).then(()=>flash("copiado ✓")).catch(()=>{}); }
 });
 
