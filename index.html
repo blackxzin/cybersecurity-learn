@@ -1,0 +1,1867 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Escola Perímetro — formação prática em cibersegurança em português: seis trilhas com 72 aulas escritas, comandos, laboratório de entropia, OWASP Top 10 2025 e avaliação.">
+<title>Escola Perímetro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+</head>
+<body>
+<style>
+/* ======================= tokens — escuro é o padrão ======================= */
+:root{
+  --ground:#080B0D; --surface:#0E1317; --surface-2:#161D23; --sunken:#050708;
+  --ink:#DCE5EA; --ink-soft:#93A2AC; --ink-faint:#5E6C77;
+  --line:#1C262D; --line-strong:#2E3A44;
+  --accent:#F5A524; --accent-2:#C87F12; --accent-wash:#F5A5241A;
+  --term:#46D17A; --term-wash:#46D17A14;
+  --crit:#FF5F52; --warn:#E0A93C; --ok:#46D17A;
+  --glow:0 0 14px #F5A5243D;
+  --grid:#FFFFFF07;
+  --shadow:0 0 0 1px #00000000, 0 18px 40px -24px #000000E0;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --ground:#E9ECEE; --surface:#F5F7F8; --surface-2:#DEE4E7; --sunken:#D3DADE;
+    --ink:#0D1418; --ink-soft:#455058; --ink-faint:#76838C;
+    --line:#C3CCD2; --line-strong:#9DA9B1;
+    --accent:#9C4409; --accent-2:#BE6A2A; --accent-wash:#9C440914;
+    --term:#0B6E3F; --term-wash:#0B6E3F12;
+    --crit:#9A241B; --warn:#7C5A0A; --ok:#0B6E3F;
+    --glow:0 0 0 transparent;
+    --grid:#0B141A08;
+    --shadow:0 1px 0 #FFFFFF inset, 0 12px 30px -22px #0B141A55;
+  }
+}
+:root[data-theme="light"]{
+  --ground:#E9ECEE; --surface:#F5F7F8; --surface-2:#DEE4E7; --sunken:#D3DADE;
+  --ink:#0D1418; --ink-soft:#455058; --ink-faint:#76838C;
+  --line:#C3CCD2; --line-strong:#9DA9B1;
+  --accent:#9C4409; --accent-2:#BE6A2A; --accent-wash:#9C440914;
+  --term:#0B6E3F; --term-wash:#0B6E3F12;
+  --crit:#9A241B; --warn:#7C5A0A; --ok:#0B6E3F;
+  --glow:0 0 0 transparent;
+  --grid:#0B141A08;
+  --shadow:0 1px 0 #FFFFFF inset, 0 12px 30px -22px #0B141A55;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink);
+  background:var(--ground);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:56px 56px, 56px 56px;
+  font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+/* varredura CRT */
+body::after{
+  content:""; position:fixed; inset:0; z-index:200; pointer-events:none; opacity:.5;
+  background:repeating-linear-gradient(0deg, #00000012 0 1px, transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+:root:not([data-theme="light"]) body::after{mix-blend-mode:normal; opacity:.35}
+.prose{font-family:"Source Serif 4",Georgia,serif; font-size:16.5px; line-height:1.68}
+h1,h2,h3,h4{margin:0; text-wrap:balance}
+h1,h2{font-family:"Archivo",Helvetica,Arial,sans-serif; letter-spacing:-0.035em; font-weight:800}
+h3,h4{font-family:"IBM Plex Mono",monospace; letter-spacing:-0.01em; font-weight:600}
+a{color:var(--accent); text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+::selection{background:var(--accent); color:var(--ground)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important}}
+.wrap{width:min(1200px,93vw); margin-inline:auto}
+.mono{font-family:"IBM Plex Mono",monospace}
+.glow{text-shadow:var(--glow)}
+
+/* ======================= topo ======================= */
+#scrollbar{position:fixed; top:0; left:0; height:2px; width:0; z-index:120;
+  background:linear-gradient(90deg,var(--term),var(--accent)); box-shadow:var(--glow)}
+.topbar{position:sticky; top:0; z-index:100; border-bottom:1px solid var(--line);
+  background:color-mix(in srgb, var(--ground) 90%, transparent); backdrop-filter:blur(10px) saturate(140%)}
+.topbar .wrap{display:flex; align-items:center; gap:18px; height:58px}
+.brand{display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink);
+  font-weight:700; font-size:15px; letter-spacing:-0.02em}
+.brand em{font-style:normal; color:var(--term)}
+.brand span{font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+  border:1px solid var(--accent); padding:2px 5px; border-radius:2px; box-shadow:var(--glow)}
+.navlinks{display:flex; gap:16px; margin-left:auto}
+.navlinks a{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);
+  text-decoration:none; padding:3px 0; border-bottom:1px solid transparent; transition:.15s}
+.navlinks a::before{content:"/"; color:var(--line-strong); margin-right:4px}
+.navlinks a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+@media (max-width:1080px){.navlinks{display:none}}
+.gauge{display:flex; align-items:center; gap:8px; margin-left:auto}
+@media (min-width:1081px){.gauge{margin-left:0}}
+.gauge svg{display:block; transform:rotate(-90deg)}
+.gauge .track{stroke:var(--line-strong); fill:none; stroke-width:3}
+.gauge .fill{stroke:var(--accent); fill:none; stroke-width:3; stroke-linecap:round;
+  transition:stroke-dashoffset .5s ease; filter:drop-shadow(0 0 4px var(--accent))}
+.gauge b{font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; display:block; line-height:1.1}
+.gauge small{display:block; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint)}
+.iconbtn{background:var(--surface); border:1px solid var(--line); color:var(--ink-soft); border-radius:3px;
+  height:30px; min-width:30px; padding:0 8px; cursor:pointer; font:600 11px/1 "IBM Plex Mono",monospace;
+  display:inline-grid; place-items:center; letter-spacing:.06em; transition:.15s}
+.iconbtn:hover{border-color:var(--accent); color:var(--accent); box-shadow:var(--glow)}
+
+/* ======================= herói ======================= */
+.hero{position:relative; overflow:hidden; padding:66px 0 54px; border-bottom:1px solid var(--line)}
+.hero canvas{position:absolute; inset:0; width:100%; height:100%; opacity:.62; pointer-events:none}
+.hero .wrap{position:relative}
+.eyebrow{display:flex; align-items:center; gap:10px; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--term); margin:0}
+.eyebrow::before{content:"▸"; color:var(--accent)}
+.eyebrow::after{content:""; flex:1; height:1px; max-width:200px;
+  background:linear-gradient(90deg,var(--line-strong),transparent)}
+h1.title{font-size:clamp(40px,6.6vw,78px); line-height:.98; margin:16px 0 0; font-weight:900; letter-spacing:-0.05em}
+h1.title i{font-style:normal; color:var(--accent); text-shadow:var(--glow)}
+.lede{max-width:60ch; margin:20px 0 0; color:var(--ink-soft)}
+.herogrid{display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:end; margin-top:36px}
+@media (max-width:980px){.herogrid{grid-template-columns:1fr; gap:30px}}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-top:30px}
+.stats div{background:var(--surface); padding:14px 13px}
+.stats b{display:block; font-family:"Archivo",sans-serif; font-size:27px; font-weight:900;
+  letter-spacing:-0.045em; line-height:1; font-variant-numeric:tabular-nums}
+.stats span{font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint)}
+.cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px}
+.btn{font:600 12px/1 "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase;
+  padding:12px 18px; border-radius:3px; text-decoration:none; cursor:pointer; transition:.15s;
+  border:1px solid var(--accent); background:var(--accent); color:var(--ground)}
+.btn:hover{background:var(--accent-2); border-color:var(--accent-2); box-shadow:var(--glow)}
+.btn.ghost{background:transparent; color:var(--ink); border-color:var(--line-strong)}
+.btn.ghost:hover{border-color:var(--term); color:var(--term); box-shadow:none}
+.btn.sm{padding:8px 12px; font-size:11px}
+
+/* ======================= moldura de terminal ======================= */
+.term{background:var(--sunken); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  box-shadow:var(--shadow)}
+.termbar{display:flex; align-items:center; gap:6px; padding:8px 12px; border-bottom:1px solid var(--line);
+  background:var(--surface)}
+.termbar i{width:8px; height:8px; border-radius:99px; background:var(--line-strong)}
+.termbar i:first-child{background:var(--crit)} .termbar i:nth-child(2){background:var(--warn)}
+.termbar i:nth-child(3){background:var(--ok)}
+.termbar span{margin-left:8px; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint)}
+.termbody{padding:14px 15px; font-size:12.4px; line-height:1.85; min-height:215px; color:var(--ink-soft)}
+.termbody .p{color:var(--term)} .termbody .ok{color:var(--ok)}
+.termbody .wr{color:var(--warn)} .termbody .cr{color:var(--crit)}
+.caret{display:inline-block; width:7px; height:13px; background:var(--accent); vertical-align:-2px;
+  animation:blink 1.05s steps(1) infinite; box-shadow:var(--glow)}
+@keyframes blink{50%{opacity:0}}
+
+/* ======================= seções ======================= */
+section{padding:66px 0; border-bottom:1px solid var(--line); position:relative}
+.shead{display:flex; align-items:flex-end; justify-content:space-between; gap:22px; margin-bottom:30px; flex-wrap:wrap}
+.shead h2{font-size:clamp(26px,3.4vw,38px)}
+.shead .tag{display:block; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:9px}
+.shead .tag::before{content:"["; color:var(--line-strong); margin-right:5px}
+.shead .tag::after{content:"]"; color:var(--line-strong); margin-left:5px}
+.shead p{margin:9px 0 0; color:var(--ink-soft); max-width:62ch}
+.hint{font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin:0}
+</style>
+<style>
+/* ======================= trilhas ======================= */
+.trilhas{display:grid; gap:12px}
+.mod{border:1px solid var(--line); background:var(--surface); border-radius:4px; overflow:hidden;
+  box-shadow:var(--shadow); position:relative}
+.mod::before{content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--line-strong);
+  transition:background .3s}
+.mod[open-state="1"]::before{background:var(--accent); box-shadow:var(--glow)}
+.mod > button{all:unset; box-sizing:border-box; display:grid; width:100%; cursor:pointer;
+  grid-template-columns:auto 1fr auto auto auto; gap:18px; align-items:center; padding:18px 20px 18px 22px}
+.mod > button:hover .mname{color:var(--accent)}
+.midx{font-size:11.5px; font-weight:700; color:var(--accent); border:1px solid var(--line-strong);
+  border-radius:2px; padding:4px 7px; font-variant-numeric:tabular-nums}
+.mname{font-family:"Archivo",sans-serif; font-weight:800; font-size:20px; letter-spacing:-0.03em; transition:.15s}
+.mmeta{display:block; font-size:10.5px; color:var(--ink-faint); letter-spacing:.06em; margin-top:4px}
+.lvl{font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; padding:3px 8px; border-radius:2px;
+  border:1px solid currentColor}
+.lvl.b{color:var(--ok)} .lvl.i{color:var(--warn)} .lvl.a{color:var(--crit)}
+.mbar{display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--ink-faint);
+  font-variant-numeric:tabular-nums}
+.mbar i{display:block; width:60px; height:4px; border-radius:99px; background:var(--sunken); overflow:hidden}
+.mbar i s{display:block; height:100%; width:0; background:var(--accent); transition:width .35s ease}
+.chev{color:var(--ink-faint); font-size:15px; transition:transform .25s}
+.mod[open-state="1"] .chev{transform:rotate(90deg); color:var(--accent)}
+.mbody{display:none; border-top:1px solid var(--line); padding:20px 20px 22px 22px}
+.mod[open-state="1"] .mbody{display:grid; grid-template-columns:1fr 300px; gap:26px}
+@media (max-width:900px){
+  .mod[open-state="1"] .mbody{grid-template-columns:1fr}
+  .mod > button{grid-template-columns:auto 1fr auto; gap:12px; padding:15px 14px}
+  .lvl, .mbar i, .mbar em{display:none}
+}
+.mgoal{margin:0 0 16px; color:var(--ink-soft); max-width:64ch}
+
+/* ---- tópico expansível ---- */
+.topics{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.topic{border:1px solid var(--line); border-radius:3px; background:var(--ground); overflow:hidden}
+.topic.open{border-color:var(--line-strong)}
+.trow{display:grid; grid-template-columns:auto auto 1fr auto; gap:11px; align-items:center; padding:9px 12px}
+.trow:hover{background:var(--surface-2)}
+.tnum{font-size:10px; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+.tchk{appearance:none; width:16px; height:16px; flex:none; border:1.5px solid var(--line-strong); border-radius:2px;
+  cursor:pointer; display:grid; place-items:center; background:var(--sunken)}
+.tchk:checked{background:var(--term); border-color:var(--term)}
+.tchk:checked::after{content:"✓"; color:var(--ground); font-size:11px; font-weight:700; line-height:1}
+.ttitle{all:unset; cursor:pointer; font-size:14.5px; color:var(--ink); line-height:1.45}
+.ttitle:hover{color:var(--accent)}
+.topic.done .ttitle{color:var(--ink-faint); text-decoration:line-through; text-decoration-color:var(--line-strong)}
+.texp{font-size:12px; color:var(--ink-faint); transition:transform .25s}
+.topic.open .texp{transform:rotate(90deg); color:var(--accent)}
+.tbody{display:none; padding:4px 14px 16px 44px; border-top:1px dashed var(--line)}
+.topic.open .tbody{display:block; animation:slide .3s ease}
+@keyframes slide{from{opacity:0; transform:translateY(-6px)}to{opacity:1; transform:none}}
+.tbody p{margin:12px 0 0; color:var(--ink-soft); font-family:"Source Serif 4",Georgia,serif;
+  font-size:16px; line-height:1.66; max-width:70ch}
+.tbody p b{color:var(--ink)}
+.tbody code{font-family:"IBM Plex Mono",monospace; font-size:13px; background:var(--sunken);
+  border:1px solid var(--line); padding:1px 5px; border-radius:2px; color:var(--accent)}
+pre.code{margin:14px 0 0; background:var(--sunken); border:1px solid var(--line); border-left:2px solid var(--term);
+  border-radius:3px; padding:12px 14px; overflow-x:auto; font-size:12.6px; line-height:1.75; color:var(--ink-soft)}
+pre.code b{color:var(--term); font-weight:500}
+.gotcha{margin-top:14px; border-left:2px solid var(--crit); background:color-mix(in srgb,var(--crit) 8%,transparent);
+  padding:9px 12px; font-size:13px; color:var(--ink-soft); border-radius:0 3px 3px 0}
+.gotcha b{color:var(--crit); letter-spacing:.1em; text-transform:uppercase; font-size:10px; display:block; margin-bottom:3px}
+
+.aside{border:1px solid var(--line); background:var(--sunken); border-radius:3px; padding:15px 16px; align-self:start;
+  display:grid; gap:14px}
+.aside h4{font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:7px}
+.aside p{margin:0; font-size:13.5px; color:var(--ink-soft); line-height:1.62}
+.aside .lk{display:grid; gap:5px}
+.aside .lk a{font-size:12.5px; color:var(--ink-soft); text-decoration:none; display:flex; gap:7px}
+.aside .lk a::before{content:"↗"; color:var(--accent)}
+.aside .lk a:hover{color:var(--accent)}
+.tags{display:flex; flex-wrap:wrap; gap:5px}
+.tags span{font-size:10.5px; padding:3px 7px; border-radius:2px; background:var(--surface);
+  border:1px solid var(--line); color:var(--ink-soft)}
+
+/* ======================= painéis ======================= */
+.panel{border:1px solid var(--line); background:var(--surface); border-radius:4px; padding:22px;
+  box-shadow:var(--shadow); position:relative}
+.panel::before,.panel::after{content:""; position:absolute; width:9px; height:9px; border:1px solid var(--accent);
+  opacity:.7}
+.panel::before{top:-1px; left:-1px; border-right:0; border-bottom:0}
+.panel::after{bottom:-1px; right:-1px; border-left:0; border-top:0}
+.panel h3{font-size:15px; letter-spacing:.02em; margin-bottom:6px}
+.panel > p{color:var(--ink-soft); margin:0 0 16px; font-size:14px}
+.labgrid{display:grid; grid-template-columns:1fr 1fr; gap:22px}
+@media (max-width:900px){.labgrid{grid-template-columns:1fr}}
+.field{display:flex; gap:9px}
+.field input{flex:1; font:400 15px/1.2 "IBM Plex Mono",monospace; padding:12px 13px; border-radius:3px;
+  border:1px solid var(--line-strong); background:var(--sunken); color:var(--ink)}
+.field input:focus{border-color:var(--accent)}
+.meter{height:8px; border-radius:99px; background:var(--sunken); overflow:hidden; margin-top:18px;
+  border:1px solid var(--line)}
+.meter s{display:block; height:100%; width:0; transition:width .3s ease, background .3s ease}
+.readout{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:18px; background:var(--line);
+  border:1px solid var(--line); border-radius:3px; overflow:hidden}
+.readout div{background:var(--sunken); padding:12px 13px}
+.readout b{display:block; font-size:18px; font-weight:600; font-variant-numeric:tabular-nums}
+.readout span{font-size:9px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint)}
+.verdict{margin-top:14px; font-size:12.5px; padding:10px 12px; border-radius:0 3px 3px 0;
+  border-left:2px solid var(--accent); background:var(--accent-wash); color:var(--ink-soft); line-height:1.65}
+.note{font-size:11.5px; color:var(--ink-faint); margin:12px 0 0; line-height:1.6}
+.formula{background:var(--sunken); border:1px solid var(--line); border-radius:3px; padding:11px 13px;
+  overflow-x:auto; font-size:13px; color:var(--term); line-height:1.9}
+
+/* ======================= OWASP (cartões 3D) ======================= */
+.owasp{display:grid; grid-template-columns:repeat(auto-fill,minmax(305px,1fr)); gap:12px}
+.flip{background:none; border:0; padding:0; height:200px; cursor:pointer; perspective:1100px}
+.flip .inner{position:relative; width:100%; height:100%; transform-style:preserve-3d;
+  transition:transform .62s cubic-bezier(.3,.85,.3,1)}
+.flip[aria-pressed="true"] .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute; inset:0; backface-visibility:hidden; border:1px solid var(--line);
+  border-radius:4px; background:var(--surface); padding:15px 16px; display:flex; flex-direction:column;
+  gap:8px; text-align:left; overflow:hidden}
+.flip:hover .face{border-color:var(--accent)}
+.flip .back{transform:rotateY(180deg); background:var(--sunken)}
+.rid{font-size:10.5px; font-weight:700; color:var(--ground); background:var(--accent); padding:3px 7px;
+  border-radius:2px; align-self:flex-start; letter-spacing:.05em}
+.rname{font-family:"Archivo",sans-serif; font-weight:800; font-size:17px; letter-spacing:-0.03em; color:var(--ink)}
+.rsub{margin:0; font-size:13px; color:var(--ink-soft); line-height:1.6}
+.hintflip{margin-top:auto; font-size:9.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-faint)}
+.flip .back p{margin:0; font-size:12.6px; color:var(--ink-soft); line-height:1.65; overflow:auto}
+.flip .back .fix{border-left:2px solid var(--term); padding-left:9px; color:var(--ink)}
+.flip .back code{font-size:11.5px; color:var(--accent)}
+.delta{font-size:10px; color:var(--ink-faint); letter-spacing:.06em}
+
+/* ======================= quiz ======================= */
+.quiz{max-width:840px}
+.q{border:1px solid var(--line); background:var(--surface); border-radius:4px; padding:18px 20px; margin-bottom:10px}
+.q > p{margin:0 0 13px; font-size:15.5px; line-height:1.6}
+.q > p b{color:var(--accent); margin-right:9px; font-weight:600}
+.opts{display:grid; gap:6px}
+.opt{all:unset; display:flex; gap:10px; align-items:flex-start; padding:9px 12px; border:1px solid var(--line);
+  border-radius:3px; cursor:pointer; font-size:14px; transition:.12s; line-height:1.5}
+.opt:hover{border-color:var(--line-strong); background:var(--surface-2)}
+.opt kbd{font-size:10.5px; color:var(--ink-faint); border:1px solid var(--line); border-radius:2px;
+  padding:1px 5px; flex:none; margin-top:2px}
+.opt.right{border-color:var(--ok); background:var(--term-wash); color:var(--ink)}
+.opt.wrong{border-color:var(--crit); background:color-mix(in srgb,var(--crit) 10%,transparent)}
+.expl{display:none; margin-top:12px; font-size:14px; color:var(--ink-soft); border-left:2px solid var(--accent);
+  padding-left:11px; font-family:"Source Serif 4",Georgia,serif; line-height:1.62}
+.q.done .expl{display:block}
+.q.done .opt{pointer-events:none}
+.score{position:sticky; bottom:14px; margin-top:18px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--surface); border:1px solid var(--accent); border-radius:4px; padding:13px 16px;
+  box-shadow:var(--shadow)}
+.score b{font-family:"Archivo",sans-serif; font-size:24px; font-weight:900; font-variant-numeric:tabular-nums}
+.score span{font-size:12px; color:var(--ink-soft)}
+.score button{margin-left:auto}
+
+/* ======================= conquistas / linha / glossário / recursos ======================= */
+.badges{display:grid; grid-template-columns:repeat(auto-fill,minmax(178px,1fr)); gap:12px}
+.badge{border:1px solid var(--line); background:var(--surface); border-radius:4px; padding:16px 14px;
+  display:grid; gap:8px; justify-items:center; text-align:center;
+  filter:grayscale(1) opacity(.34); transition:filter .5s, border-color .5s}
+.badge.got{filter:none; border-color:var(--accent); animation:pop .6s cubic-bezier(.2,1.5,.4,1)}
+.badge.got svg{filter:drop-shadow(0 0 8px var(--accent))}
+@keyframes pop{0%{transform:scale(.82)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.badge svg{width:46px; height:46px; color:var(--accent)}
+.badge b{font-size:13px; font-weight:600}
+.badge span{font-size:10px; color:var(--ink-faint); letter-spacing:.05em}
+
+.timeline{position:relative; padding-left:32px}
+.timeline::before{content:""; position:absolute; left:8px; top:5px; bottom:5px; width:1px;
+  background:linear-gradient(var(--accent), var(--line))}
+.tl{position:relative; padding-bottom:28px}
+.tl::before{content:""; position:absolute; left:-28px; top:6px; width:9px; height:9px; border-radius:99px;
+  background:var(--ground); border:2px solid var(--accent); box-shadow:var(--glow)}
+.tl time{font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent)}
+.tl h4{font-family:"Archivo",sans-serif; font-size:17px; font-weight:800; letter-spacing:-0.025em; margin-top:3px}
+.tl p{margin:6px 0 0; color:var(--ink-soft); max-width:66ch; font-size:14.5px}
+
+.search{display:flex; gap:9px; margin-bottom:20px; max-width:480px}
+.search input{flex:1; font:400 13.5px/1.2 "IBM Plex Mono",monospace; padding:11px 13px; border-radius:3px;
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink)}
+.gloss{display:grid; grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:4px; overflow:hidden}
+.gloss dl{margin:0; background:var(--surface); padding:14px 16px}
+.gloss dt{font-size:12.5px; font-weight:700; color:var(--accent); letter-spacing:.03em}
+.gloss dd{margin:5px 0 0; font-size:14px; color:var(--ink-soft); font-family:"Source Serif 4",Georgia,serif;
+  line-height:1.6}
+.empty{grid-column:1/-1; background:var(--surface); padding:24px; text-align:center; color:var(--ink-faint);
+  font-size:12.5px}
+
+.reslist{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px}
+.resgrp{border:1px solid var(--line); background:var(--surface); border-radius:4px; padding:16px 18px}
+.resgrp h4{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:11px}
+.resgrp ul{list-style:none; margin:0; padding:0; display:grid; gap:9px}
+.resgrp a{display:block; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:500}
+.resgrp a:hover{color:var(--accent)}
+.resgrp small{display:block; color:var(--ink-faint); font-size:12px; font-family:"Source Serif 4",Georgia,serif;
+  line-height:1.5; margin-top:2px}
+.free{font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--term); border:1px solid var(--term);
+  border-radius:2px; padding:1px 4px; margin-left:6px; vertical-align:1px}
+
+/* ======================= cheatsheet ======================= */
+.sheet{border:1px solid var(--line); border-radius:4px; overflow:hidden; background:var(--sunken)}
+.sheettabs{display:flex; gap:0; border-bottom:1px solid var(--line); background:var(--surface); overflow-x:auto}
+.sheettabs button{all:unset; cursor:pointer; padding:11px 16px; font-size:11.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-faint); border-bottom:2px solid transparent; white-space:nowrap}
+.sheettabs button[aria-selected="true"]{color:var(--accent); border-bottom-color:var(--accent)}
+.sheetbody{padding:6px 0}
+.cmd{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center;
+  padding:10px 16px; border-bottom:1px solid var(--line)}
+.cmd:last-child{border-bottom:0}
+.cmd:hover{background:var(--surface)}
+.cmd code{font-size:12.6px; color:var(--accent); overflow-x:auto; display:block}
+.cmd small{display:block; color:var(--ink-faint); font-size:11.5px; margin-top:3px; font-family:"Source Serif 4",serif}
+.copy{all:unset; cursor:pointer; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  border:1px solid var(--line); border-radius:2px; padding:4px 8px}
+.copy:hover{color:var(--term); border-color:var(--term)}
+
+/* ======================= rodapé + revelação ======================= */
+.ethics{border:1px solid var(--warn); border-radius:4px; padding:18px 20px;
+  background:color-mix(in srgb,var(--warn) 7%,transparent)}
+.ethics h3{font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--warn); margin-bottom:8px}
+.ethics p{margin:0; color:var(--ink-soft); max-width:80ch; font-size:14px; line-height:1.68}
+footer{padding:46px 0 60px}
+.foot{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-top:28px; font-size:11px;
+  color:var(--ink-faint); letter-spacing:.06em}
+.rv{opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv.on{opacity:1; transform:none}
+.tilt{transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+.tiltwrap{perspective:1300px}
+.count{font-variant-numeric:tabular-nums}
+</style>
+
+<div id="scrollbar"></div>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#topo">perimetro<em>_</em><span>lab</span></a>
+    <nav class="navlinks" aria-label="Navegação principal">
+      <a href="#trilhas">trilhas</a>
+      <a href="#comandos">comandos</a>
+      <a href="#lab">lab</a>
+      <a href="#owasp">owasp</a>
+      <a href="#quiz">quiz</a>
+      <a href="#conquistas">conquistas</a>
+      <a href="#recursos">recursos</a>
+      <a href="#glossario">glossário</a>
+    </nav>
+    <div class="gauge" title="Seu progresso nas trilhas">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+        <circle class="track" cx="16" cy="16" r="13"></circle>
+        <circle class="fill" id="ring" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="81.68"></circle>
+      </svg>
+      <div><b id="pctTop">0%</b><small>progresso</small></div>
+    </div>
+    <button class="iconbtn" id="themeBtn" title="Alternar tema" aria-label="Alternar tema">◐</button>
+    <button class="iconbtn" id="exportBtn" title="Salvar/copiar seu progresso em JSON">↓ json</button>
+  </div>
+</header>
+
+<main id="topo">
+
+<div class="hero">
+  <canvas id="globe" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="eyebrow">formação prática · ofensiva e defensiva · pt-br</p>
+    <div class="herogrid">
+      <div>
+        <h1 class="title">Aprenda a <i id="scramble">defender</i><br>o que já está exposto.</h1>
+        <p class="lede prose">Seis trilhas encadeadas, do handshake TCP à resposta a incidentes. Cada tópico traz
+          a aula escrita, o comando que se usa na prática e o erro que todo mundo comete. Progresso salvo no
+          seu navegador, sem conta e sem servidor.</p>
+        <div class="cta">
+          <a class="btn" href="#trilhas">iniciar trilha 01</a>
+          <a class="btn ghost" href="#lab">abrir laboratório</a>
+          <a class="btn ghost" href="#recursos">recursos grátis</a>
+        </div>
+        <div class="stats">
+          <div><b class="count" data-to="6">0</b><span>trilhas</span></div>
+          <div><b class="count" data-to="72">0</b><span>aulas</span></div>
+          <div><b class="count" data-to="139">0</b><span>horas</span></div>
+          <div><b class="count" data-to="42">0</b><span>recursos</span></div>
+        </div>
+      </div>
+      <div class="term" aria-hidden="true">
+        <div class="termbar"><i></i><i></i><i></i><span>recon — escopo autorizado</span></div>
+        <div class="termbody" id="termOut"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="trilhas">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x01 · currículo</span>
+        <h2>Trilhas</h2>
+        <p>Ordem importa: cada trilha assume o vocabulário da anterior. Clique no título de um tópico para
+          abrir a aula; marque a caixa quando dominar.</p>
+      </div>
+      <p class="hint" id="trilhaHint">0 / 54 aulas</p>
+    </div>
+    <div class="search rv">
+      <input id="topicSearch" type="search" placeholder="buscar aula: xss, kerberos, argon2…" aria-label="Buscar aula">
+      <button class="btn ghost sm" id="expandAll" type="button">abrir tudo</button>
+    </div>
+    <div class="trilhas tiltwrap" id="trilhasBox"></div>
+  </div>
+</section>
+
+<section id="comandos">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x02 · referência rápida</span>
+        <h2>Comandos que você vai usar</h2>
+        <p>O mínimo operacional de cada área. Rode só em ambiente seu ou autorizado.</p>
+      </div>
+      <p class="hint">clique em copiar</p>
+    </div>
+    <div class="sheet rv">
+      <div class="sheettabs" id="sheetTabs" role="tablist"></div>
+      <div class="sheetbody" id="sheetBody"></div>
+    </div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x03 · laboratório</span>
+        <h2>Entropia de senha</h2>
+        <p>Força de senha não é "tem símbolo?". É quantos palpites o atacante precisa dar. Digite uma senha
+          <em>fictícia</em> e veja a conta acontecer.</p>
+      </div>
+      <p class="hint">cálculo local · nada sai do navegador</p>
+    </div>
+    <div class="labgrid">
+      <div class="panel rv">
+        <h3>medidor</h3>
+        <p>Estimativa pelo alfabeto efetivo, com penalização de dicionário, repetição, sequência e padrão comum.</p>
+        <div class="field">
+          <input id="pw" type="text" spellcheck="false" autocomplete="off" placeholder="senha de teste (descartável)">
+          <button class="btn ghost sm" id="genPw" type="button">gerar</button>
+        </div>
+        <div class="meter"><s id="pwMeter"></s></div>
+        <div class="readout">
+          <div><b id="rBits">0</b><span>bits</span></div>
+          <div><b id="rPool">0</b><span>alfabeto</span></div>
+          <div><b id="rTime">—</b><span>quebra offline</span></div>
+        </div>
+        <div class="verdict" id="pwVerdict">Aguardando entrada.</div>
+        <p class="note">Nunca digite uma senha real em nenhum medidor online — inclusive neste.</p>
+      </div>
+      <div class="panel rv">
+        <h3>a conta</h3>
+        <p>Entropia mede incerteza. Com alfabeto de tamanho <code>P</code> e comprimento <code>L</code>:</p>
+        <div class="formula">H = L × log2(P)&nbsp;&nbsp;bits<br>tentativas médias = 2^(H − 1)<br>tempo = tentativas ÷ taxa</div>
+        <p class="prose" style="margin-top:15px; color:var(--ink-soft)">A taxa assumida é <b>10<sup>11</sup> palpites/s</b>
+          — ordem de grandeza de um ataque offline contra hash rápido (SHA-256 sem alongamento) em GPU dedicada.
+          Com um KDF adequado a taxa cai várias ordens de grandeza: é por isso que a escolha da função de derivação
+          importa mais do que exigir um caractere especial do usuário. A recomendação atual do NIST (SP 800-63B) é
+          justamente essa — comprimento mínimo, bloqueio de senha vazada, e nada de regra de composição obrigatória.</p>
+        <div class="tags" style="margin-top:14px">
+          <span>Argon2id</span><span>scrypt</span><span>bcrypt</span><span>PBKDF2</span><span>NIST SP 800-63B</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="owasp">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x04 · risco em aplicação</span>
+        <h2>OWASP Top 10 : 2025</h2>
+        <p>A edição de 2025 chegou com duas categorias novas — falhas na cadeia de suprimentos e tratamento
+          incorreto de condições excepcionais — e absorveu SSRF dentro de controle de acesso quebrado.
+          Clique num cartão para ver o vetor concreto e a mitigação que corta o problema.</p>
+      </div>
+      <p class="hint">clique para virar</p>
+    </div>
+    <div class="owasp" id="owaspBox"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x05 · avaliação</span>
+        <h2>Doze questões</h2>
+        <p>Separam quem decorou o termo de quem entendeu o mecanismo. Cada resposta vem com explicação.</p>
+      </div>
+      <p class="hint">sem tempo limite</p>
+    </div>
+    <div class="quiz" id="quizBox"></div>
+    <div class="score" id="scoreBar">
+      <b><span id="scoreN">0</span>/12</b>
+      <span id="scoreMsg">Responda para ver o desempenho.</span>
+      <button class="btn ghost sm" id="resetQuiz" type="button">refazer</button>
+    </div>
+  </div>
+</section>
+
+<section id="conquistas">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x06 · progresso</span>
+        <h2>Conquistas</h2>
+        <p>Desbloqueadas pelo avanço real nas trilhas e no quiz. Salvas neste navegador.</p>
+      </div>
+      <p class="hint" id="badgeHint">0 de 8 desbloqueadas</p>
+    </div>
+    <div class="badges" id="badgesBox"></div>
+  </div>
+</section>
+
+<section id="rota">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x07 · plano</span>
+        <h2>Do zero ao primeiro cargo</h2>
+        <p>Um caminho plausível de doze meses estudando em ritmo de meio período. Referência de sequência
+          e de esforço, não regra.</p>
+      </div>
+    </div>
+    <div class="timeline" id="tlBox"></div>
+  </div>
+</section>
+
+<section id="recursos">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x08 · material externo</span>
+        <h2>Recursos gratuitos</h2>
+        <p>Tudo abaixo tem camada gratuita real — sem cartão, sem trial de sete dias. Fonte primária primeiro:
+          quando existir a documentação oficial ou a norma, ela vem antes do curso.</p>
+      </div>
+      <p class="hint">42 links verificados</p>
+    </div>
+    <div class="reslist" id="resBox"></div>
+  </div>
+</section>
+
+<section id="glossario">
+  <div class="wrap">
+    <div class="shead rv">
+      <div>
+        <span class="tag">0x09 · vocabulário</span>
+        <h2>Glossário</h2>
+        <p>Os termos que aparecem em toda vaga e em todo relatório. Definição curta, sem rodeio.</p>
+      </div>
+    </div>
+    <div class="search">
+      <input id="glossSearch" type="search" placeholder="filtrar termo ou definição…" aria-label="Filtrar glossário">
+    </div>
+    <div class="gloss" id="glossBox"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="ethics rv">
+      <h3>⚠ uso autorizado</h3>
+      <p>Todo conteúdo ofensivo aqui existe para defesa. Testar sistema de terceiro sem autorização escrita é
+        crime no Brasil — Lei 12.737/2012, que inseriu o art. 154-A no Código Penal, com pena agravada pela Lei
+        14.155/2021 — e na maioria das jurisdições. Pratique em laboratórios feitos para isso: TryHackMe,
+        Hack The Box, PortSwigger Web Security Academy, pwn.college, OverTheWire, DVWA, OWASP Juice Shop —
+        ou no seu próprio ambiente isolado.</p>
+    </div>
+    <div class="foot">
+      <span>escola perímetro · conteúdo educacional · pt-br</span>
+      <span>progresso local · nenhum dado enviado</span>
+    </div>
+  </div>
+</footer>
+
+</main>
+<script>
+/* ================== TRILHA 01 — FUNDAMENTOS ================== */
+const T1 = {
+ n:"Fundamentos", lvl:"b", lvlTxt:"Básico", h:12,
+ goal:"Construir o vocabulário que todo o resto assume. Sem isso, os módulos seguintes viram decoreba de ferramenta.",
+ lab:"Escreva um modelo de ameaça STRIDE de um aplicativo que você usa todo dia — uma página, sem ferramenta. Depois classifique cada ameaça por probabilidade e impacto e diga qual você trataria primeiro.",
+ links:[["MITRE ATT&CK","https://attack.mitre.org/"],["Calculadora CVSS 4.0","https://www.first.org/cvss/calculator/4.0"],["CWE Top 25","https://cwe.mitre.org/top25/"],["NIST CSF 2.0","https://www.nist.gov/cyberframework"]],
+ tags:["STRIDE","CVSS","ATT&CK","Menor privilégio"],
+ t:[
+ {t:"Tríade CIA: confidencialidade, integridade, disponibilidade",
+  d:"<p>Toda decisão de segurança é uma escolha entre três propriedades. <b>Confidencialidade</b> é quem pode ler. <b>Integridade</b> é a garantia de que o dado não foi alterado sem autorização — e de que você consegue provar isso. <b>Disponibilidade</b> é o sistema responder quando é preciso.</p><p>As três brigam entre si. Cifrar tudo com uma chave guardada num cofre físico aumenta confidencialidade e derruba disponibilidade. Replicar o banco em cinco regiões aumenta disponibilidade e amplia a superfície de leitura. Segurança boa é escolher conscientemente o equilíbrio para <i>aquele</i> ativo — não maximizar as três.</p><p>Na prática, o primeiro passo de qualquer análise é perguntar: para este ativo, qual das três dói mais se cair? Um prontuário médico pende para confidencialidade. Um sistema de frenagem pende para disponibilidade e integridade. Um registro contábil pende para integridade.</p>",
+  w:"Tratar \"segurança\" como sinônimo de confidencialidade. Ransomware ataca disponibilidade; fraude bancária ataca integridade. Quem só pensa em vazamento não vê os dois."},
+ {t:"Autenticação, autorização e não-repúdio",
+  d:"<p><b>Autenticação</b> responde \"quem é você\" — senha, chave FIDO2, certificado. <b>Autorização</b> responde \"o que você pode fazer\" — e é sempre uma decisão do servidor, por recurso, a cada requisição. <b>Não-repúdio</b> responde \"você consegue negar depois que fez?\" — resolvido por assinatura digital e log íntegro, não por senha.</p><p>A maioria das falhas graves em aplicação está no meio: o sistema autentica bem e autoriza mal. O usuário faz login corretamente e depois consegue acessar o pedido de outra pessoa trocando um número na URL. Autenticar não é autorizar.</p>",
+  c:"<b># o erro clássico: autenticou, logo pode</b>\nGET /api/pedidos/1042  Authorization: Bearer &lt;token válido&gt;\n→ 200 OK   (mas o pedido 1042 é de outro usuário)\n\n<b># o correto: decisão por objeto</b>\npedido = repo.buscar(id)\nse pedido.dono_id != token.usuario_id: 403",
+  w:"Esconder o botão no front-end e achar que autorizou. O atacante não usa o seu front-end."},
+ {t:"Superfície de ataque, vetor de ataque e ativo crítico",
+  d:"<p><b>Superfície de ataque</b> é a soma de todos os pontos por onde alguém não autorizado poderia interagir com o sistema: portas abertas, endpoints da API, formulários, dependências, integrações, funcionários que atendem telefone. <b>Vetor</b> é o caminho concreto usado num ataque específico. <b>Ativo crítico</b> é o que você não pode perder.</p><p>Reduzir superfície é o controle com melhor relação custo-benefício em segurança — desligar um serviço não usado elimina toda uma classe de falhas futuras, incluindo as que ainda nem foram descobertas. É por isso que hardening vem antes de comprar ferramenta.</p><p>Faça o inventário na ordem: ativos críticos primeiro, depois o que toca neles, depois o resto. Quase toda organização descobre nesse exercício pelo menos um serviço exposto que ninguém sabia que existia.</p>",
+  w:"Inventariar só o que está no Terraform. O que dói costuma ser o servidor que alguém subiu na mão em 2021 e esqueceu."},
+ {t:"Modelagem de ameaças com STRIDE",
+  d:"<p>STRIDE é um checklist para não esquecer categorias de ameaça ao desenhar um sistema: <b>S</b>poofing (fingir ser outro), <b>T</b>ampering (adulterar dado), <b>R</b>epudiation (negar o que fez), <b>I</b>nformation disclosure (vazar), <b>D</b>enial of service (derrubar), <b>E</b>levation of privilege (virar admin).</p><p>O método é simples: desenhe o fluxo de dados, marque cada fronteira de confiança (onde o dado passa de um domínio de controle para outro) e aplique as seis letras em cada fronteira. Fronteira de confiança é onde a maioria das falhas mora — navegador para API, API para banco, sua aplicação para o serviço de terceiro.</p><p>Uma sessão de STRIDE de 45 minutos no desenho custa menos que qualquer correção depois do deploy, e é a única técnica desta trilha que pega falha de <i>design</i> — a categoria que nenhum scanner encontra.</p>",
+  c:"<b># fronteira: navegador → API de pagamento</b>\nS  token de sessão previsível?      → token aleatório 128 bits\nT  valor do pedido vem do cliente?  → recalcular no servidor\nR  quem autorizou o estorno?        → log assinado e imutável\nI  erro devolve stack trace?        → erro genérico ao usuário\nD  endpoint sem limite de taxa?     → rate limit por conta e IP\nE  papel do usuário vem no JWT?     → validar papel no servidor",
+  w:"Modelar depois de pronto. STRIDE serve para mudar o desenho; aplicado no fim vira só uma lista de coisas que não dá mais para consertar barato."},
+ {t:"Risco = probabilidade × impacto; apetite e aceitação",
+  d:"<p>Vulnerabilidade não é risco. Risco é a chance de a coisa acontecer multiplicada pelo estrago se acontecer, no seu contexto. Uma falha crítica num sistema interno sem dado sensível e sem rota externa pode ser risco menor que uma falha média num endpoint público de pagamento.</p><p>Existem quatro respostas legítimas ao risco: <b>mitigar</b> (reduzir), <b>transferir</b> (seguro, contrato), <b>evitar</b> (não fazer aquilo) e <b>aceitar</b> (documentar e seguir). Aceitar é uma decisão válida — desde que seja registrada, tenha dono e prazo de revisão. O problema nunca é aceitar risco; é aceitar sem saber.</p>",
+  w:"Priorizar pela nota CVSS pura. CVSS mede severidade técnica do defeito, não o risco do seu ambiente — falta exposição, criticidade do ativo e existência de exploração ativa."},
+ {t:"Menor privilégio, segregação de funções, defesa em profundidade",
+  d:"<p><b>Menor privilégio</b>: cada identidade — pessoa, serviço, contêiner — recebe exatamente a permissão de que precisa, pelo tempo de que precisa. Na nuvem isso significa papel por serviço, não uma chave de administrador reaproveitada.</p><p><b>Segregação de funções</b>: quem aprova não é quem executa. Impede que uma única conta comprometida feche o ciclo sozinha.</p><p><b>Defesa em profundidade</b>: empilhar controles independentes para que a falha de um não vire comprometimento. O WAF não substitui a consulta parametrizada; a segmentação de rede não substitui a autenticação. Cada camada compra tempo de detecção.</p>",
+  c:"<b># política ampla demais (padrão de quem tem pressa)</b>\n{ \"Effect\":\"Allow\", \"Action\":\"s3:*\", \"Resource\":\"*\" }\n\n<b># menor privilégio</b>\n{ \"Effect\":\"Allow\",\n  \"Action\":[\"s3:GetObject\"],\n  \"Resource\":\"arn:aws:s3:::faturas-prod/relatorios/*\" }",
+  w:"Conceder amplo \"só para destravar agora\" e nunca voltar. Permissão temporária sem prazo é permissão permanente."},
+ {t:"Ciclo da vulnerabilidade: CWE, CVE, CVSS, KEV",
+  d:"<p><b>CWE</b> é a categoria do defeito (CWE-89 = injeção SQL). <b>CVE</b> é a instância pública: essa falha, nesse produto, nessa versão. <b>CVSS</b> é a nota de severidade de 0 a 10. O <b>KEV</b> da CISA é a lista de vulnerabilidades com exploração confirmada no mundo real — e é o melhor sinal gratuito de prioridade que existe.</p><p>A ordem prática de triagem é: está no KEV e é acessível de fora? Corrija hoje. Tem prova de conceito pública e ativo exposto? Esta semana. CVSS alto sem exploração conhecida e sem rota? Entra na fila normal. Esse critério vale mais que qualquer painel colorido.</p>",
+  c:"<b># o que perguntar de cada CVE, nesta ordem</b>\n1. o componente afetado existe mesmo no meu ambiente?\n2. a versão vulnerável está em execução (não só no lockfile)?\n3. o caminho vulnerável é alcançável de fora?\n4. está na lista KEV da CISA?\n5. existe correção ou mitigação temporária?",
+  w:"Correr atrás de todo CVE crítico do boletim. Sem checar se o código vulnerável é alcançável, a equipe gasta o mês inteiro em risco teórico."},
+ {t:"Cyber Kill Chain e matriz MITRE ATT&CK",
+  d:"<p>A <b>Kill Chain</b> descreve um ataque em fases: reconhecimento, armamento, entrega, exploração, instalação, comando e controle, ações sobre o objetivo. O valor dela é lembrar que existe tempo entre a invasão e o dano — e que quebrar qualquer elo já interrompe a operação.</p><p>O <b>MITRE ATT&CK</b> é mais útil no dia a dia: um catálogo de táticas (o objetivo do adversário) e técnicas (como ele consegue), documentadas a partir de campanhas reais. Ele vira linguagem comum entre time vermelho e azul, e serve de mapa de cobertura: para cada técnica relevante ao seu setor, você tem detecção? tem prevenção? tem nada?</p><p>Use ATT&CK para responder à pergunta que importa numa reunião de diretoria: \"contra o que exatamente nós estamos protegidos?\"</p>",
+  w:"Tratar ATT&CK como lista de tarefas a zerar. São centenas de técnicas; cobrir todas é impossível e desnecessário. Priorize pelas que o adversário do seu setor realmente usa."},
+ {t:"Higiene pessoal: MFA resistente a phishing, gestor de senhas, patch",
+  d:"<p>Três hábitos resolvem a maior parte do risco individual. <b>Gestor de senhas</b>: senha única e longa por serviço, porque o ataque mais comum não quebra a sua senha — ele reusa a que vazou de outro site. <b>MFA</b>: e nem todo MFA é igual. SMS e código de aplicativo são interceptáveis por phishing em tempo real; chave FIDO2/passkey é ligada à origem e simplesmente não funciona no site falso.</p><p><b>Atualização</b>: a maioria das invasões usa falha conhecida com correção disponível há meses. Atualizar sistema, navegador e telefone é o controle mais barato que existe.</p><p>Vale para você e vale para a organização — o profissional que não faz isso na própria vida não convence ninguém a fazer.</p>",
+  w:"Guardar o segundo fator no mesmo dispositivo e no mesmo cofre da senha. Um roubo de celular desbloqueado passa a valer por tudo."}
+ ]};
+
+/* ================== TRILHA 02 — REDES ================== */
+const T2 = {
+ n:"Redes", lvl:"b", lvlTxt:"Básico→Interm.", h:20,
+ goal:"Entender o que trafega antes de tentar interceptar, bloquear ou detectar. Rede é onde o ataque aparece primeiro e onde a evidência fica.",
+ lab:"Capture o seu próprio tráfego no Wireshark e identifique, num único pcap: o handshake TCP de três vias, o Client Hello do TLS com o SNI em claro, e uma consulta DNS com a resposta. Depois explique a sequência para alguém que não é da área.",
+ links:[["Wireshark — guia oficial","https://www.wireshark.org/docs/wsug_html_chunked/"],["Nmap Reference Guide","https://nmap.org/book/man.html"],["RFC 9293 — TCP","https://www.rfc-editor.org/rfc/rfc9293.html"],["RFC 8446 — TLS 1.3","https://www.rfc-editor.org/rfc/rfc8446.html"],["Suricata Docs","https://docs.suricata.io/"]],
+ tags:["Wireshark","tcpdump","nmap","Suricata","Zeek"],
+ t:[
+ {t:"Modelo OSI e pilha TCP/IP aplicados à prática",
+  d:"<p>O modelo OSI de sete camadas é didático; a pilha real é TCP/IP com quatro. O que importa é saber em que camada um problema mora, porque isso decide a ferramenta: perda de pacote é camada 3/4 e se investiga com <code>ping</code>, <code>traceroute</code> e captura; erro 500 é camada 7 e se investiga no log da aplicação.</p><p>A regra prática de diagnóstico é subir camada por camada: cabo/enlace, endereço IP e rota, porta e conexão, e só então protocolo de aplicação. Metade dos incidentes ditos \"de aplicação\" morre na camada 3 — rota errada, MTU, DNS apontando para o lugar velho.</p>",
+  c:"<b># camada por camada, na ordem</b>\nip a                 # tenho endereço? (L2/L3)\nip route             # tenho rota padrão? (L3)\nping -c3 1.1.1.1     # alcanço a internet por IP? (L3)\ndig +short exemplo.com  # o nome resolve? (L7/DNS)\nss -tnp | head       # que conexões existem? (L4)\ncurl -v https://exemplo.com  # o protocolo responde? (L7)"},
+ {t:"Handshake de três vias, flags TCP e estados de conexão",
+  d:"<p>Uma conexão TCP começa com <code>SYN</code> → <code>SYN,ACK</code> → <code>ACK</code>. Esse detalhe aparentemente acadêmico é o que diferencia tipos de varredura: uma varredura <i>SYN</i> envia o SYN e nunca completa o handshake, o que a torna mais rápida e menos registrada que uma conexão completa.</p><p>As flags contam a história: <code>RST</code> é porta fechada respondendo rápido; silêncio costuma ser firewall descartando; <code>FIN</code> é encerramento educado. Ler flags num pcap é como ler o tom de voz da rede.</p><p>Estados importam em incidente: um monte de conexões em <code>SYN_RECV</code> sugere inundação de SYN; muitas em <code>CLOSE_WAIT</code> sugere aplicação que não fecha soquete — bug, não ataque.</p>",
+  c:"<b># só o handshake, sem ruído</b>\nsudo tcpdump -ni any 'tcp[tcpflags] &amp; (tcp-syn|tcp-ack) != 0' -c 20\n\n<b># filtro equivalente no Wireshark</b>\ntcp.flags.syn == 1 &amp;&amp; tcp.flags.ack == 0\n\n<b># estados atuais, agrupados</b>\nss -tan | awk 'NR>1{print $1}' | sort | uniq -c | sort -rn",
+  w:"Concluir \"porta filtrada\" de um único teste. Perda de pacote e limite de taxa produzem exatamente o mesmo silêncio."},
+ {t:"Endereçamento IP, máscara, sub-rede, CIDR e NAT",
+  d:"<p>Um endereço IPv4 é 32 bits partidos entre rede e host pela máscara. <code>/24</code> significa 24 bits de rede e 8 de host: 256 endereços, 254 usáveis. Saber calcular isso de cabeça define escopo de varredura, regra de firewall e, principalmente, o que é \"interno\".</p><p>As faixas privadas (RFC 1918) são <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code> e <code>192.168.0.0/16</code>. Além delas há a faixa de link-local <code>169.254.0.0/16</code> — de onde vem o endereço de metadados de instância <code>169.254.169.254</code>, alvo clássico de SSRF na nuvem.</p><p><b>NAT</b> traduz muitos endereços privados em um público. Ele não é controle de segurança: esconde topologia, mas qualquer regra de encaminhamento ou conexão iniciada de dentro atravessa.</p>",
+  c:"<b># quantos hosts cabem e qual a faixa</b>\nipcalc 10.20.30.0/26\n→ rede 10.20.30.0  broadcast 10.20.30.63  hosts 62\n\n<b># /24 inteiro, só descoberta, sem varrer porta</b>\nnmap -sn 192.168.1.0/24",
+  w:"Confundir NAT com firewall. Máquina atrás de NAT com porta encaminhada está tão exposta quanto qualquer outra."},
+ {t:"DNS: recursão, tipos de registro, DoH/DoT e envenenamento",
+  d:"<p>DNS traduz nome em endereço, e é o primeiro lugar onde quase todo ataque deixa rastro — malware precisa resolver o domínio do servidor de comando antes de falar com ele. Log de DNS é a fonte de detecção com melhor custo-benefício que existe.</p><p>Registros que importam: <code>A</code>/<code>AAAA</code> (endereço), <code>CNAME</code> (apelido), <code>MX</code> (correio), <code>TXT</code> (SPF, DKIM, verificações), <code>NS</code> (delegação). <b>DoH</b> e <b>DoT</b> cifram a consulta, o que protege privacidade do usuário e ao mesmo tempo cega a detecção baseada em DNS — decisão a tomar conscientemente.</p><p><b>Domínio pendente</b> (dangling) é o risco silencioso: um CNAME apontando para um recurso de nuvem que você desligou permite que outra pessoa registre aquele recurso e passe a servir conteúdo no seu subdomínio.</p>",
+  c:"<b># cadeia completa da resolução</b>\ndig +trace exemplo.com\n\n<b># o registro TXT costuma entregar a superfície de e-mail</b>\ndig +short TXT exemplo.com\n\n<b># subdomínio apontando para recurso inexistente = pendente</b>\ndig +short CNAME antigo.exemplo.com",
+  w:"Guardar log de DNS por 7 dias. Investigação real costuma precisar de 90 — a intrusão média é descoberta muito depois de acontecer."},
+ {t:"HTTP: métodos, status, cabeçalhos e HTTP/2",
+  d:"<p>HTTP é texto com estrutura: linha de requisição, cabeçalhos, corpo. Entender a semântica evita erro grosseiro — <code>GET</code> deve ser seguro e idempotente, e usar <code>GET</code> para ação que muda estado abre porta para CSRF e para dado sensível vazando em log de proxy e histórico.</p><p>Códigos contam história em teste: <code>401</code> é \"não autenticado\", <code>403</code> é \"autenticado mas sem permissão\", e a diferença entre <code>403</code> e <code>404</code> em recursos de outro usuário é ela própria um vazamento de informação (permite enumerar o que existe).</p><p>HTTP/2 e HTTP/3 mudam o transporte (multiplexação, cabeçalho binário, QUIC sobre UDP) sem mudar a semântica — mas introduzem classes próprias de falha, como o contrabando de requisição por divergência entre proxy e servidor de origem.</p>",
+  c:"<b># só os cabeçalhos, com o caminho seguido</b>\ncurl -sSIL https://exemplo.com\n\n<b># cabeçalhos de segurança presentes?</b>\ncurl -sSI https://exemplo.com | grep -iE 'content-security|strict-transport|x-content-type|referrer'\n\n<b># qual versão do protocolo foi negociada</b>\ncurl -sI --http2 -o /dev/null -w '%{http_version}\\n' https://exemplo.com",
+  w:"Confiar em cabeçalho enviado pelo cliente para decidir permissão. <code>X-Forwarded-For</code>, <code>Host</code> e <code>Referer</code> são todos controláveis pelo atacante."},
+ {t:"TLS 1.3: handshake, certificado, cadeia de confiança e SNI",
+  d:"<p>TLS resolve três coisas ao mesmo tempo: confidencialidade (ninguém lê), integridade (ninguém altera sem ser notado) e autenticidade do servidor (você está falando com quem pensa). A autenticidade vem do certificado, assinado por uma autoridade em que o seu sistema já confia.</p><p>No TLS 1.3 o handshake caiu para uma ida e volta, os modos frágeis foram removidos e o sigilo futuro passou a ser obrigatório: vazar a chave privada do servidor amanhã não abre as sessões gravadas ontem.</p><p>O <b>SNI</b> ainda viaja em claro na maior parte da internet — é por ele que firewall e proxy sabem para qual domínio você está indo mesmo sem ler o conteúdo. Erro de certificado quase nunca é \"chato\": é expiração, cadeia incompleta ou nome que não bate, e cada um tem causa distinta.</p>",
+  c:"<b># ver a cadeia, o emissor e as datas</b>\nopenssl s_client -connect exemplo.com:443 -servername exemplo.com &lt; /dev/null 2>/dev/null \\\n  | openssl x509 -noout -subject -issuer -dates\n\n<b># versões e cifras aceitas</b>\nnmap --script ssl-enum-ciphers -p 443 exemplo.com",
+  w:"Desativar a verificação de certificado para \"resolver\" no ambiente de teste e o código ir assim para produção. <code>verify=False</code> transforma TLS em criptografia contra ninguém."},
+ {t:"Firewall com estado, proxy reverso e segmentação",
+  d:"<p>Um firewall com estado guarda a tabela de conexões e permite a resposta do que você iniciou, sem precisar de regra de volta. A regra de ouro é negar por padrão e permitir o mínimo, na direção certa — inclusive na saída: controlar tráfego de saída é o que atrapalha o canal de comando e controle depois que a máquina já foi comprometida.</p><p><b>Segmentação</b> limita o alcance do que já entrou. Uma rede plana transforma um notebook infectado em acesso ao banco de dados de produção; uma rede segmentada transforma o mesmo incidente num host isolado. É o controle que mais reduz impacto por real gasto.</p><p><b>Proxy reverso</b> concentra TLS, limite de taxa e cabeçalhos na borda — e por isso vira um ponto único de configuração que precisa ser revisado com cuidado.</p>",
+  c:"<b># negar por padrão, permitir o mínimo (nftables)</b>\nnft add rule inet filter input ct state established,related accept\nnft add rule inet filter input tcp dport 22 ip saddr 10.0.8.0/24 accept\nnft add rule inet filter input drop\n\n<b># o que está escutando nesta máquina, e por quem</b>\nss -tulpn",
+  w:"Cuidar só da entrada. Sem regra de saída, o primeiro host comprometido conversa com o servidor do atacante à vontade."},
+ {t:"Captura e leitura de pacotes: Wireshark e tcpdump",
+  d:"<p>Captura é a prova material da rede. <code>tcpdump</code> coleta no servidor; o Wireshark analisa com conforto na sua máquina. O fluxo profissional é capturar em arquivo com filtro restrito, transferir e analisar depois — capturar tudo em interface movimentada enche disco em minutos.</p><p>Existem dois tipos de filtro e confundir os dois custa tempo: o <b>filtro de captura</b> (sintaxe BPF, decide o que é gravado) e o <b>filtro de exibição</b> (sintaxe do Wireshark, decide o que é mostrado). No Wireshark, \"Seguir fluxo TCP\" remonta a conversa inteira e é onde a maioria das descobertas acontece.</p>",
+  c:"<b># capturar em arquivo, com rotação, filtro restrito</b>\nsudo tcpdump -i eth0 -s0 -w /tmp/cap.pcap -C 100 -W 5 'port 443 or port 53'\n\n<b># ler depois, resolvendo pouca coisa</b>\ntcpdump -nn -r /tmp/cap.pcap | head -50\n\n<b># exibição no Wireshark: erros HTTP e DNS lento</b>\nhttp.response.code >= 400\ndns.time > 0.5",
+  w:"Capturar em produção sem combinar antes. Pacote contém dado pessoal e, dependendo do conteúdo, credencial — isso tem implicação legal, LGPD inclusive."},
+ {t:"IDS/IPS por assinatura e por anomalia; onde cada um falha",
+  d:"<p><b>Assinatura</b> (Suricata, Snort) casa padrão conhecido: rápido, explicável, e cego para o que é novo. <b>Anomalia</b> aprende o normal e aponta desvio: pega o desconhecido e produz falso positivo aos montes até ser ajustado. Ambiente maduro usa os dois, com papéis diferentes.</p><p>O <b>Zeek</b> ocupa um terceiro lugar e é subestimado: em vez de alertar, ele transforma tráfego em registros estruturados (conexões, DNS, TLS, arquivos transferidos). Isso alimenta caça a ameaças e investigação retroativa muito melhor que alerta isolado.</p><p>Limite honesto: com TLS em toda parte, inspeção de conteúdo só existe onde há interceptação — que tem custo, risco e implicação de privacidade. Boa parte da detecção moderna migrou para metadado (quem falou com quem, quando, quanto) e para o endpoint.</p>",
+  c:"<b># regra Suricata: sinal de comando e controle em texto claro</b>\nalert http $HOME_NET any -> $EXTERNAL_NET any ( \\\n  msg:\"Possivel C2 - User-Agent suspeito\"; \\\n  http.user_agent; content:\"Mozilla/4.0 (compatible; MSIE\"; \\\n  sid:1000001; rev:1;)",
+  w:"Ligar milhares de assinaturas de fábrica e nunca ajustar. IDS que grita o dia inteiro é IDS que ninguém lê — o falso positivo destrói a detecção mais rápido que a falta de regra."}
+ ]};
+</script>
+<script>
+/* ================== TRILHA 03 — CRIPTOGRAFIA ================== */
+const T3 = {
+ n:"Criptografia", lvl:"i", lvlTxt:"Intermediário", h:18,
+ goal:"Saber escolher a primitiva certa e reconhecer o uso errado. Quase nenhuma falha real é quebra de algoritmo — é uso indevido de algoritmo bom.",
+ lab:"Cifre a mesma imagem bitmap em AES-ECB e em AES-GCM e abra as duas. A versão em ECB continua reconhecível: essa é a aula inteira em uma imagem. Depois faça os oito primeiros desafios do Cryptopals.",
+ links:[["Cryptopals Crypto Challenges","https://cryptopals.com/"],["OWASP Cryptographic Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html"],["OWASP Password Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"],["NIST SP 800-63B","https://pages.nist.gov/800-63-3/sp800-63b.html"],["RFC 9106 — Argon2","https://www.rfc-editor.org/rfc/rfc9106.html"]],
+ tags:["AES-GCM","Ed25519","Argon2id","HMAC","PKI"],
+ t:[
+ {t:"Cifra simétrica: AES, tamanho de chave e modos",
+  d:"<p>Cifra simétrica usa a mesma chave para cifrar e decifrar. É rápida e serve para volume — arquivos, banco, sessão TLS. AES-128 já é folgado contra força bruta; AES-256 se usa por exigência normativa e por margem contra ataque quântico futuro, não porque 128 esteja fraco.</p><p>O modo importa mais que o tamanho da chave. <b>ECB</b> cifra cada bloco isoladamente: blocos iguais viram texto cifrado igual e o padrão do dado original aparece. <b>CBC</b> encadeia blocos e precisa de IV imprevisível, mas não autentica — o que abre a porta para ataques de padding oracle. <b>GCM</b> cifra e autentica na mesma operação, e é o padrão de fato hoje.</p><p>Regra prática: use AES-GCM ou ChaCha20-Poly1305. Qualquer coisa fora disso exige justificativa escrita.</p>",
+  c:"<b># cifrar com AES-256-GCM (demonstração; em produção use uma biblioteca)</b>\nopenssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt \\\n  -in dados.txt -out dados.enc\n\n<b># ECB nunca — nem \"só para teste\"</b>\n# openssl enc -aes-256-ecb ...   ← proibido",
+  w:"Reusar o mesmo par (chave, nonce) em GCM. Isso não enfraquece: quebra. Permite recuperar o texto claro e forjar mensagens."},
+ {t:"Cifra assimétrica: RSA e curvas elípticas",
+  d:"<p>Assimétrica usa um par: a chave pública cifra e verifica, a privada decifra e assina. Resolve o problema de distribuição de chave e viabiliza assinatura digital — as duas coisas que a simétrica não faz sozinha.</p><p>O custo é desempenho: é ordens de grandeza mais lenta. Por isso TLS usa assimétrica só para negociar uma chave simétrica de sessão e depois troca tudo com AES.</p><p>Hoje, para chave nova, curvas elípticas ganham: <b>Ed25519</b> para assinatura, <b>X25519</b> para troca de chave. Segurança equivalente a RSA de 3072 bits com chaves minúsculas e menos formas de errar a implementação. RSA continua no mundo por compatibilidade — se usar, mínimo 2048 bits e preenchimento OAEP/PSS, nunca PKCS#1 v1.5 para cifragem.</p>",
+  c:"<b># par Ed25519 para assinatura (SSH e assinatura de artefato)</b>\nssh-keygen -t ed25519 -C \"chave-de-trabalho\"\n\n<b># par X25519 para troca de chave</b>\nopenssl genpkey -algorithm X25519 -out priv.pem\nopenssl pkey -in priv.pem -pubout -out pub.pem",
+  w:"Guardar chave privada no repositório \"temporariamente\". Chave que tocou o Git é chave queimada — histórico guarda tudo; rotacione."},
+ {t:"Funções de hash: colisão, pré-imagem e uso correto",
+  d:"<p>Hash é função de mão única que transforma entrada de qualquer tamanho em saída fixa. As propriedades que importam: <b>resistência a pré-imagem</b> (dado o hash, não achar a entrada) e <b>resistência a colisão</b> (não achar duas entradas com o mesmo hash).</p><p>MD5 e SHA-1 estão quebrados para colisão — há colisões práticas demonstradas, o que os inutiliza para assinatura e integridade de artefato. SHA-256 e SHA-3 são as escolhas atuais. BLAKE3 é uma alternativa moderna muito rápida.</p><p>Hash serve para integridade, deduplicação e identificação de conteúdo. <b>Não serve para senha</b>: a velocidade que o torna bom para arquivo é exatamente o que torna a força bruta viável contra senha.</p>",
+  c:"<b># verificar integridade de um download contra o hash publicado</b>\nsha256sum -c SHA256SUMS --ignore-missing\n\n<b># hash de um arquivo</b>\nsha256sum imagem.iso",
+  w:"Comparar hash ou token com <code>==</code> comum. A comparação sai no primeiro byte diferente e vaza informação por tempo — use comparação de tempo constante."},
+ {t:"HMAC e autenticação de mensagem",
+  d:"<p>Hash sozinho não prova origem: quem altera a mensagem recalcula o hash. <b>HMAC</b> combina hash com chave secreta — só quem tem a chave produz a etiqueta válida. É o mecanismo por trás de webhook assinado, cookie de sessão íntegro e token de API.</p><p>Ao verificar um webhook, três coisas: recalcule o HMAC sobre o corpo <i>bruto</i> (não sobre o JSON reserializado), compare em tempo constante e valide um carimbo de tempo para impedir repetição de requisição antiga.</p>",
+  c:"<b># verificação de webhook, em Python</b>\nimport hmac, hashlib\nesperado = hmac.new(segredo, corpo_bruto, hashlib.sha256).hexdigest()\nse não hmac.compare_digest(esperado, assinatura_recebida):\n    rejeitar()   # 400, sem detalhar o motivo",
+  w:"Verificar assinatura depois de fazer <code>json.parse</code> e reserializar. Espaço em branco e ordem de chave mudam, o HMAC não bate — e a equipe \"resolve\" desligando a verificação."},
+ {t:"Derivação de chave: Argon2id, scrypt, bcrypt, PBKDF2",
+  d:"<p>Senha vira chave por uma <b>função de derivação</b> deliberadamente cara. A ordem de preferência hoje: <b>Argon2id</b> (padrão atual, custo de memória e tempo ajustáveis), <b>scrypt</b>, <b>bcrypt</b> (limitado a 72 bytes de entrada) e <b>PBKDF2</b> quando exigido por norma antiga.</p><p>Cada senha recebe um <b>salt</b> único e aleatório, guardado junto do hash — ele impede tabela pré-computada. Um <b>pepper</b> opcional é um segredo global guardado fora do banco, que protege num vazamento só do banco.</p><p>Calibre os parâmetros pela sua máquina: aumente custo até a verificação levar algo entre 0,25 e 1 segundo no servidor de produção. É esse atrito que transforma um vazamento de base em problema controlável em vez de catástrofe imediata.</p>",
+  c:"<b># parâmetros de partida razoáveis para Argon2id</b>\nmemória = 64 MiB     # m\ntempo   = 3          # t (iterações)\nparalelismo = 4      # p\nsalt aleatório de 16 bytes, único por senha\n\n<b># depois meça: alvo entre 250 ms e 1 s por verificação</b>",
+  w:"Copiar parâmetros de um artigo de 2016. Custo de hardware cai todo ano; parâmetro de KDF precisa de revisão periódica como qualquer outro controle."},
+ {t:"Assinatura digital, PKI, autoridade certificadora e revogação",
+  d:"<p>Assinatura prova autoria e integridade: você assina com a privada, qualquer um verifica com a pública. É o que sustenta certificado TLS, atualização de software confiável e não-repúdio.</p><p><b>PKI</b> é a estrutura de confiança: uma autoridade certificadora atesta que aquela chave pública pertence àquele nome. Seu sistema operacional já traz um conjunto de raízes confiáveis, e a cadeia vai da folha à raiz. Falha de cadeia incompleta é o erro de configuração mais comum em TLS.</p><p><b>Revogação</b> é o elo fraco histórico: CRL é pesada, OCSP vaza qual site você visita e frequentemente falha \"aberto\". A resposta prática da indústria foi encurtar drasticamente a validade dos certificados, de modo que expiração faça o trabalho da revogação. Automatize a renovação — é o único caminho sustentável.</p><p>Do lado da transparência, todo certificado público vai para os registros de <b>Certificate Transparency</b>, o que é excelente também para reconhecimento: dá para enumerar subdomínios de uma organização só lendo esses registros.</p>",
+  c:"<b># todos os subdomínios já certificados de um domínio (CT logs)</b>\ncurl -s 'https://crt.sh/?q=%25.exemplo.com&amp;output=json' | jq -r '.[].name_value' | sort -u",
+  w:"Deixar renovação de certificado como tarefa manual de calendário. Expiração em produção é incidente evitável — e acontece toda semana em alguma empresa grande."},
+ {t:"Diffie-Hellman e sigilo futuro perfeito",
+  d:"<p>Diffie-Hellman permite que duas partes cheguem à mesma chave secreta trocando mensagens públicas, sem nunca transmitir a chave. Combinado com autenticação (certificado), é o coração do TLS moderno.</p><p><b>Sigilo futuro perfeito</b> (PFS) é a consequência de usar um par efêmero a cada sessão: mesmo que a chave privada de longo prazo do servidor vaze depois, o tráfego gravado no passado continua ilegível. No TLS 1.3 isso deixou de ser opção e virou obrigatório — todos os modos são efêmeros.</p><p>Isso muda a economia do adversário: \"grave agora, decifre depois\" deixa de funcionar contra a chave do servidor. Continua funcionando, porém, contra algoritmos que um computador quântico futuro quebre — motivo pelo qual a migração para criptografia pós-quântica já começou nos navegadores e bibliotecas.</p>",
+  w:"Assumir que \"tem HTTPS\" implica PFS. Configuração antiga com troca de chave estática RSA não tem — e ainda existe em equipamento legado."},
+ {t:"Aleatoriedade: CSPRNG, entropia, nonce e IV",
+  d:"<p>Quase toda criptografia depende de aleatoriedade imprevisível. Use sempre o gerador criptográfico do sistema: <code>/dev/urandom</code>, <code>getrandom()</code>, <code>crypto.randomBytes</code>, <code>secrets</code> em Python, <code>crypto.getRandomValues</code> no navegador. Nunca <code>Math.random</code>, <code>rand()</code> ou qualquer coisa semeada por relógio.</p><p><b>IV</b> e <b>nonce</b> não são secretos, mas têm regras próprias: em CBC o IV precisa ser imprevisível; em GCM o nonce precisa ser <i>único</i> por chave — e nunca reusado. Token de sessão, código de recuperação e identificador de convite também precisam vir do gerador criptográfico.</p>",
+  c:"<b># token de 256 bits, seguro, em várias linguagens</b>\npython3 -c \"import secrets; print(secrets.token_urlsafe(32))\"\nnode    -e \"console.log(require('crypto').randomBytes(32).toString('base64url'))\"\nopenssl rand -base64 32",
+  w:"Gerar código de recuperação de conta com o gerador comum da linguagem. É previsível, e já custou caro a mais de um serviço grande."},
+ {t:"Antipadrões: ECB, nonce reusado, cripto caseira, comparação insegura",
+  d:"<p>A lista curta do que quebra sistemas reais: modo <b>ECB</b>; <b>nonce reusado</b> em GCM ou CTR; <b>cifra sem autenticação</b> (CBC puro), que habilita padding oracle; <b>comparação não constante</b> de hash e token; <b>chave em código-fonte</b>; e <b>algoritmo próprio</b>.</p><p>Sobre o último: escrever criptografia é uma especialidade de pesquisa, não um exercício de programação. A postura profissional é usar biblioteca de alto nível auditada — libsodium, a API Web Crypto, o Tink — que não deixa escolher parâmetro errado.</p><p>Vale também a regra de ouro operacional: chave em cofre (KMS, Vault, cofre da nuvem), rotação definida e nunca a mesma chave para propósitos diferentes.</p>",
+  c:"<b># comparação segura (tempo constante)</b>\nPython  : hmac.compare_digest(a, b)\nNode    : crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))\nGo      : subtle.ConstantTimeCompare([]byte(a), []byte(b))",
+  w:"\"Só ofuscamos um pouquinho, não é criptografia mesmo.\" Ofuscação em segurança é custo sem benefício: engana auditoria interna e não engana atacante."}
+ ]};
+
+/* ================== TRILHA 04 — SEGURANÇA WEB ================== */
+const T4 = {
+ n:"Segurança Web", lvl:"i", lvlTxt:"Intermediário", h:26,
+ goal:"Dominar a superfície onde a maioria dos incidentes começa. É também a trilha com mais laboratório gratuito de qualidade disponível.",
+ lab:"Feche todos os laboratórios <b>Apprentice</b> da PortSwigger Web Security Academy — são gratuitos e cobrem cada tópico desta trilha. Depois reproduza três deles no OWASP Juice Shop rodando localmente.",
+ links:[["PortSwigger Web Security Academy","https://portswigger.net/web-security"],["OWASP Cheat Sheet Series","https://cheatsheetseries.owasp.org/"],["OWASP Top 10:2025","https://owasp.org/Top10/"],["OWASP Juice Shop","https://owasp.org/www-project-juice-shop/"],["MDN — Segurança web","https://developer.mozilla.org/pt-BR/docs/Web/Security"],["OWASP WSTG","https://owasp.org/www-project-web-security-testing-guide/"]],
+ tags:["Burp Suite","PortSwigger","Juice Shop","CSP","WSTG"],
+ t:[
+ {t:"Política de mesma origem, CORS e cookies SameSite",
+  d:"<p>A <b>política de mesma origem</b> é a base da segurança do navegador: script de uma origem (esquema + domínio + porta) não lê resposta de outra. <b>CORS</b> é o mecanismo pelo qual o servidor <i>relaxa</i> isso de propósito — não é proteção que você liga, é permissão que você concede.</p><p>A combinação fatal é <code>Access-Control-Allow-Origin</code> refletindo a origem que chegou junto com <code>Allow-Credentials: true</code>: isso autoriza qualquer site a ler respostas autenticadas do seu usuário. Curinga com credenciais o navegador barra; refletir a origem ele aceita.</p><p><b>SameSite</b> nos cookies decide se eles viajam em requisição vinda de outro site. <code>Lax</code> é o padrão moderno e já corta a maioria dos CSRF; <code>Strict</code> é mais seguro e atrapalha fluxo de login por link; <code>None</code> exige <code>Secure</code> e deve ser exceção justificada.</p>",
+  c:"<b># cookie de sessão como deve sair</b>\nSet-Cookie: sid=&lt;aleatório 128 bits&gt;; HttpOnly; Secure; SameSite=Lax; Path=/\n\n<b># CORS perigoso — origem refletida com credencial</b>\nAccess-Control-Allow-Origin: &lt;eco da origem do atacante&gt;\nAccess-Control-Allow-Credentials: true",
+  w:"Liberar CORS \"para o front funcionar\" e esquecer aberto em produção. É leitura autenticada entregue a qualquer site."},
+ {t:"Injeção SQL: união, cega, por tempo — e a correção real",
+  d:"<p>Injeção acontece quando entrada do usuário vira parte da instrução em vez de dado. As variantes mudam só na forma de extrair: <b>por união</b> quando o resultado aparece na tela, <b>cega booleana</b> quando só muda o comportamento, <b>por tempo</b> quando nem isso — e a resposta demorar já é o canal.</p><p>A correção é uma só: <b>consulta parametrizada</b>. O driver envia a instrução e os valores separadamente, e o banco nunca interpreta o valor como código. Escapar manualmente, filtrar palavra e usar WAF são camadas extras com desvios conhecidos; nenhuma substitui parametrizar.</p><p>Quando a estrutura precisa ser dinâmica (nome de coluna em ordenação, por exemplo), o valor não pode vir do usuário: use lista de permissão fechada mapeando entrada para identificadores válidos.</p>",
+  c:"<b># vulnerável</b>\nsql = \"SELECT * FROM usuarios WHERE email = '\" + email + \"'\"\n\n<b># correto — parametrizado</b>\ncur.execute(\"SELECT * FROM usuarios WHERE email = %s\", (email,))\n\n<b># ordenação dinâmica: lista de permissão, nunca interpolação</b>\ncolunas = {\"nome\":\"nome\", \"data\":\"criado_em\"}\nordem = colunas.get(param, \"criado_em\")",
+  w:"Confiar em ORM como blindagem automática. Todo ORM tem porta de SQL bruto, e é exatamente ali que a injeção reaparece."},
+ {t:"XSS refletido, armazenado e baseado em DOM",
+  d:"<p>XSS é execução de script do atacante no contexto do seu site — com acesso a sessão, DOM e tudo que o usuário pode fazer. <b>Refletido</b> volta na resposta da requisição; <b>armazenado</b> fica salvo e atinge todo mundo que vê a página; <b>baseado em DOM</b> nem passa pelo servidor: o próprio JavaScript da página leva dado controlável até um sink perigoso.</p><p>A defesa é <b>codificação na saída, específica do contexto</b>: HTML, atributo, URL e JavaScript exigem tratamentos diferentes. Frameworks modernos escapam por padrão — e por isso o bug fica concentrado nas escotilhas: <code>innerHTML</code>, <code>dangerouslySetInnerHTML</code>, <code>v-html</code>, <code>bypassSecurityTrust*</code>.</p><p>Camadas de apoio: <code>HttpOnly</code> no cookie de sessão (impede o roubo trivial via script) e uma <b>CSP</b> restritiva, que reduz o impacto mesmo quando a falha existe.</p>",
+  c:"<b># sinks a auditar no código-fonte</b>\nelement.innerHTML = dado\ndocument.write(dado)\neval(dado) / new Function(dado)\nlocation = dado          // também abre redirecionamento aberto\n\n<b># saneamento quando HTML do usuário é mesmo necessário</b>\nDOMPurify.sanitize(html)   // biblioteca dedicada, nunca regex própria",
+  w:"Sanear na entrada e achar que resolveu. O mesmo dado sai em HTML, em atributo e em JSON — cada contexto exige codificação própria, feita na saída."},
+ {t:"CSRF, token antifalsificação e proteção por SameSite",
+  d:"<p>CSRF explora o fato de o navegador anexar cookies automaticamente: um site do atacante dispara uma requisição de mudança de estado para o seu, e ela chega autenticada. O usuário não precisa fazer nada além de visitar a página.</p><p>Defesa em duas camadas: cookie de sessão com <code>SameSite=Lax</code> (ou <code>Strict</code>), que já barra a maior parte; e <b>token antifalsificação</b> por sessão, enviado em campo oculto ou cabeçalho e validado no servidor. Só use <code>GET</code> para leitura — ação que muda estado nunca em <code>GET</code>.</p><p>Para APIs com token no cabeçalho <code>Authorization</code> o risco é diferente: o navegador não anexa esse cabeçalho sozinho, então CSRF clássico não se aplica — mas se você guarda o token em cookie, volta a se aplicar.</p>",
+  w:"Validar o token só quando ele está presente. Se ausência passa, a proteção não existe — o atacante simplesmente não envia o campo."},
+ {t:"SSRF e metadados de instância na nuvem",
+  d:"<p>SSRF é fazer o servidor buscar uma URL escolhida pelo atacante. Na nuvem isso vale muito: o serviço de metadados em <code>169.254.169.254</code> devolve credenciais temporárias da instância, e a partir daí o acesso deixa de ser à aplicação e passa a ser à conta.</p><p>Na edição de 2025 do OWASP Top 10, SSRF deixou de ser categoria própria e foi absorvida por Controle de Acesso Quebrado — a natureza do problema é a mesma: alguém decide, do lado de fora, a que recurso o sistema vai acessar.</p><p>Defesa: lista de permissão de destinos, bloqueio explícito das faixas internas e de link-local, recusa a redirecionamento para elas, resolução de DNS feita antes e validada (para impedir troca entre a checagem e o uso), e saída por proxy dedicado sem credenciais no ambiente. Na AWS, exigir IMDSv2 elimina a exploração mais comum.</p>",
+  c:"<b># o pedido que vira comprometimento de conta</b>\nPOST /importar  { \"url\": \"http://169.254.169.254/latest/meta-data/iam/security-credentials/\" }\n\n<b># faixas que a aplicação nunca deve alcançar</b>\n127.0.0.0/8  10.0.0.0/8  172.16.0.0/12  192.168.0.0/16  169.254.0.0/16  ::1  fd00::/8",
+  w:"Validar a URL uma vez e buscar depois. Entre a checagem e o uso, o DNS pode responder outro endereço — é o clássico TOCTOU aplicado a SSRF."},
+ {t:"Autenticação: sessão, JWT, OAuth 2.0 e OIDC",
+  d:"<p><b>Sessão no servidor</b> continua sendo a escolha mais simples e segura para aplicação web: o cookie guarda um identificador opaco, o estado fica no servidor e a revogação é imediata.</p><p><b>JWT</b> é token autocontido e assinado. O ganho é não consultar o banco a cada requisição; o custo é que revogar exige lista de bloqueio — ou seja, você reintroduz o estado que queria evitar. Erros clássicos: aceitar o algoritmo <code>none</code>, não validar <code>alg</code>, ignorar <code>exp</code>, <code>aud</code> e <code>iss</code>, e guardar dado sensível no payload, que é apenas Base64 e é legível por qualquer um.</p><p><b>OAuth 2.0</b> é autorização (delegar acesso), <b>OIDC</b> é a camada de identidade sobre ele (provar quem é). Confundir os dois produz falha real. Para aplicação pública, use fluxo de código de autorização com <b>PKCE</b> e valide o parâmetro <code>state</code> — e mantenha a lista de URIs de redirecionamento estritamente fechada.</p>",
+  c:"<b># o que validar em todo JWT recebido</b>\nalg  == esperado (nunca aceitar \"none\" nem confiar no cabeçalho)\nexp  não expirado         iss  emissor esperado\naud  destinado a mim      sub  identidade que você espera\nassinatura verificada com a chave pública correta (kid do seu JWKS)",
+  w:"Guardar JWT em <code>localStorage</code> \"porque é mais fácil\". Qualquer XSS lê e leva o token; cookie <code>HttpOnly</code> ao menos exige que o ataque rode dentro da página."},
+ {t:"Controle de acesso quebrado, IDOR e escalada horizontal",
+  d:"<p>Categoria número 1 do OWASP em 2021 e de novo em 2025 — e a que mais aparece em programa de recompensa. O padrão é sempre o mesmo: a decisão de autorização usa um valor que o usuário controla.</p><p><b>IDOR</b> é a forma mais direta: trocar o identificador na URL ou no corpo e acessar o objeto de outra pessoa. Em API isso ganhou nome próprio — <b>BOLA</b> (autorização quebrada em nível de objeto) e <b>BFLA</b> (em nível de função), ambos explicitamente cobertos na edição 2025.</p><p>A defesa é arquitetural: negar por padrão, decidir no servidor, e centralizar a checagem numa camada por onde todo acesso passa — não espalhar <code>if</code> por controlador. Identificador imprevisível (UUID) ajuda, mas não é controle de acesso: é só menos fácil de adivinhar.</p>",
+  c:"<b># teste manual que encontra a maioria dos casos</b>\n1. autentique-se como usuário A e liste seus recursos\n2. autentique-se como usuário B\n3. repita cada requisição de A com a sessão de B\n4. qualquer 200 onde deveria vir 403 é achado",
+  w:"Testar só a interface. O front esconde o botão; a rota continua respondendo. Teste sempre no nível da requisição."},
+ {t:"Upload de arquivo, path traversal e desserialização insegura",
+  d:"<p><b>Upload</b>: valide o tipo pelo conteúdo (número mágico), não pela extensão nem pelo <code>Content-Type</code> enviado. Gere nome novo do lado do servidor, limite tamanho, guarde fora da raiz web — idealmente em armazenamento de objetos com domínio separado — e nunca sirva de um caminho que possa executar.</p><p><b>Path traversal</b>: qualquer caminho montado com entrada do usuário precisa ser normalizado e verificado como estando dentro do diretório base depois de resolvido. <code>../</code>, codificação dupla e caminho absoluto são as variações de sempre.</p><p><b>Desserialização insegura</b>: desserializar dado não confiável em formatos que reconstroem objetos (<code>pickle</code>, Java nativo, YAML inseguro) é execução remota de código, não vulnerabilidade teórica. Use JSON com esquema validado; se precisar de outro formato, assine o dado e verifique antes de tocar nele.</p>",
+  c:"<b># contenção de caminho, do jeito certo</b>\nbase = os.path.realpath(\"/var/app/uploads\")\nalvo = os.path.realpath(os.path.join(base, nome_do_usuario))\nse não alvo.startswith(base + os.sep): rejeitar()\n\n<b># YAML seguro</b>\nyaml.safe_load(dados)     # nunca yaml.load sem Loader seguro",
+  w:"Bloquear a extensão <code>.php</code> e liberar o resto. Configuração de servidor executa outras extensões, e o problema volta pela porta dos fundos."},
+ {t:"Cabeçalhos de segurança: CSP, HSTS, frame-ancestors",
+  d:"<p><b>CSP</b> é a defesa em profundidade mais eficaz contra XSS. A forma moderna e sustentável é baseada em nonce por requisição com <code>strict-dynamic</code>, em vez de lista gigante de domínios permitidos — lista de permissão de CDN quase sempre acaba contornável.</p><p><b>HSTS</b> obriga HTTPS no navegador e elimina o rebaixamento para HTTP. <b>frame-ancestors</b> substitui o antigo <code>X-Frame-Options</code> e resolve clickjacking. <b>X-Content-Type-Options: nosniff</b> impede o navegador de adivinhar tipo de conteúdo. <b>Referrer-Policy</b> evita vazar URL interna para terceiros. <b>Permissions-Policy</b> desliga câmera, microfone e geolocalização por padrão.</p><p>Implante CSP em modo somente-relatório primeiro, colete violações reais por alguns dias, ajuste e só então aplique. Colocar direto em produção quebra a página e a política acaba revertida.</p>",
+  c:"<b># conjunto de partida</b>\nContent-Security-Policy: default-src 'self'; script-src 'nonce-{ALEATÓRIO}' 'strict-dynamic';\n  object-src 'none'; base-uri 'none'; frame-ancestors 'none'\nStrict-Transport-Security: max-age=31536000; includeSubDomains; preload\nX-Content-Type-Options: nosniff\nReferrer-Policy: strict-origin-when-cross-origin\nPermissions-Policy: camera=(), microphone=(), geolocation=()",
+  w:"CSP com <code>'unsafe-inline'</code> em <code>script-src</code>. Isso desliga justamente a parte que impede XSS — a política existe só no papel."}
+ ]};
+</script>
+<script>
+/* ================== TRILHA 05 — OFENSIVA ================== */
+const T5 = {
+ n:"Ofensiva", lvl:"a", lvlTxt:"Avançado", h:24,
+ goal:"Executar um teste de intrusão do escopo ao relatório. O produto final não é o shell — é o relatório que muda a decisão de alguém.",
+ lab:"Comprometa três máquinas <b>Easy</b> do Hack The Box (ou a trilha Junior Penetration Tester do TryHackMe) e escreva um relatório real: resumo executivo, evidência reproduzível, impacto de negócio e remediação priorizada. O relatório vale mais que o shell.",
+ links:[["Hack The Box","https://www.hackthebox.com/"],["TryHackMe","https://tryhackme.com/"],["PayloadsAllTheThings","https://github.com/swisskyrepo/PayloadsAllTheThings"],["GTFOBins","https://gtfobins.github.io/"],["HackTricks","https://book.hacktricks.wiki/"],["OWASP WSTG","https://owasp.org/www-project-web-security-testing-guide/"],["PTES","http://www.pentest-standard.org/"]],
+ tags:["nmap","Burp","BloodHound","Impacket","Autorização"],
+ t:[
+ {t:"Ética, escopo, regras de engajamento e autorização por escrito",
+  d:"<p>Nada nesta trilha se faz sem autorização escrita. Antes de tocar em qualquer alvo existe um documento que define: o que está no escopo, o que está explicitamente fora, a janela de tempo, os limites (nada de negação de serviço, nada de engenharia social contra pessoa física sem cláusula específica), o contato de emergência e o que fazer se você achar dado que não deveria — parada imediata e comunicação.</p><p>Esse documento é o que separa o teste de intrusão do crime. No Brasil, acesso não autorizado é o art. 154-A do Código Penal. \"Eu ia mostrar que era vulnerável\" não é defesa.</p><p>Padrões como o <b>PTES</b> e o <b>WSTG</b> da OWASP dão a estrutura profissional das fases — e são a diferença entre um teste repetível e um passeio.</p>",
+  w:"Escopo verbal, \"pode pode\". Sem documento assinado, quem executa é o único responsável — e a empresa cliente também pode responder."},
+ {t:"Reconhecimento passivo e OSINT sem tocar no alvo",
+  d:"<p>Reconhecimento passivo coleta informação sem enviar um pacote sequer ao alvo, usando fontes públicas: registros de Certificate Transparency (subdomínios), DNS histórico, código-fonte e segredos vazados no GitHub, metadados em documentos publicados, vagas de emprego (que revelam a pilha de tecnologia), e o que já foi indexado por serviços de varredura de internet.</p><p>Feito bem, o passivo entrega mais superfície que qualquer scanner — e sem alertar ninguém. É também onde aparecem os achados mais graves: chave de API commitada, painel administrativo esquecido, ambiente de homologação exposto com dado de produção.</p>",
+  c:"<b># subdomínios pelos registros de transparência de certificado</b>\ncurl -s 'https://crt.sh/?q=%25.alvo.com&amp;output=json' | jq -r '.[].name_value' | sort -u\n\n<b># segredo vazado no código público</b>\n# busca por padrões: AKIA... (AWS), ghp_... (GitHub), chaves privadas",
+  w:"Achar que passivo é sempre legal em qualquer volume. Automação agressiva contra serviço de terceiro pode violar termos de uso — e OSINT sobre pessoa tem limite na LGPD."},
+ {t:"Varredura, enumeração de serviço e fingerprinting com nmap",
+  d:"<p>Terminado o passivo, começa o ativo — e aqui já é preciso escopo assinado. A sequência típica: descoberta de hosts vivos, varredura de portas, identificação de versão de serviço e execução dos scripts de enumeração.</p><p>Enumeração é a fase que mais decide o resultado. Não é \"a porta 445 está aberta\"; é \"SMBv1 habilitado, compartilhamento anônimo legível, versão sabidamente vulnerável a X\". Cada serviço tem seu próprio ritual de enumeração, e o hábito profissional é anotar tudo à medida que descobre — o achado que fecha o teste costuma ser um detalhe registrado três horas antes.</p>",
+  c:"<b># descoberta ampla, rápida, depois foco</b>\nnmap -sn 10.10.10.0/24                 # quem está vivo\nnmap -p- --min-rate 2000 10.10.10.7    # todas as portas, rápido\nnmap -sV -sC -p 22,80,445 10.10.10.7   # versão + scripts nas abertas\n\n<b># enumeração web inicial</b>\nwhatweb http://10.10.10.7\nffuf -u http://10.10.10.7/FUZZ -w wordlist.txt -mc 200,301,403",
+  w:"Varrer com <code>--min-rate</code> altíssimo em rede de produção. Você derruba serviço frágil e vira o incidente que veio testar."},
+ {t:"Análise de vulnerabilidade e triagem de falso positivo",
+  d:"<p>Scanner automatizado (Nessus, OpenVAS, Nuclei) acelera, mas o valor está na triagem: separar o achado real do ruído. Um scanner marca \"crítico\" olhando banner de versão; confirmar exige entender se o caminho vulnerável está de fato presente e alcançável.</p><p>Todo achado que entra no relatório precisa ser reproduzível pelo cliente. Isso significa evidência: a requisição exata, a resposta, o passo a passo. \"O Nessus disse\" não é achado — é ponto de partida para verificação manual.</p>",
+  w:"Colar a saída bruta do scanner no relatório. Cliente sério devolve o relatório, e com razão: falso positivo não triado destrói a credibilidade de todo o resto."},
+ {t:"Exploração de serviço exposto e de aplicação web",
+  d:"<p>Exploração é converter uma vulnerabilidade confirmada em acesso. Contra aplicação web, encadeia o que veio da trilha 04: injeção, upload malicioso, desserialização, controle de acesso quebrado. Contra serviço, é a falha conhecida da versão enumerada.</p><p>A postura profissional é o oposto do estereótipo: preferir a exploração mais simples e confiável, entender o que o código faz antes de rodar, e nunca disparar algo destrutivo em ambiente de cliente. O objetivo é demonstrar impacto de forma controlada, não causar dano — a prova de conceito para até onde é necessário para provar o ponto.</p>",
+  c:"<b># só depois de confirmar a vulnerabilidade manualmente</b>\nsearchsploit &lt;produto&gt; &lt;versão&gt;      # exploit conhecido\n# ler o exploit inteiro antes de executar — sempre\n# preferir a técnica menos destrutiva que prova o impacto",
+  w:"Rodar exploit da internet sem ler o código. Além de poder destruir o alvo, muitos trazem porta dos fundos para quem executa."},
+ {t:"Escalada de privilégio em Linux e em Windows",
+  d:"<p>O acesso inicial quase nunca é administrativo. Escalada busca o caminho de usuário comum para root ou SYSTEM. Em Linux os suspeitos de sempre: binário SUID mal configurado (consultar o GTFOBins), <code>sudo</code> permissivo, tarefa agendada gravável, capacidade de kernel, credencial em arquivo de configuração. Em Windows: serviço com caminho gravável, privilégio de token, credencial no registro, política de grupo mal aplicada.</p><p>Ferramentas de enumeração (linPEAS, winPEAS) automatizam a coleta, mas entender por que cada achado escala é o que transfere a habilidade para o alvo seguinte — e o que aparece na entrevista técnica.</p>",
+  c:"<b># Linux — primeiras verificações</b>\nsudo -l                          # o que posso rodar como root\nfind / -perm -4000 2>/dev/null   # binários SUID\ncat /etc/crontab                 # tarefas agendadas\n# cruzar cada binário SUID com o GTFOBins",
+  w:"Rodar o enumerador e parar no relatório colorido. A ferramenta lista; escalar exige entender o mecanismo por trás de cada linha."},
+ {t:"Movimentação lateral, pivoteamento e persistência",
+  d:"<p>Comprometido um host, o interesse real costuma estar em outro. <b>Movimentação lateral</b> usa credencial e confiança obtidas para alcançar novos alvos; <b>pivoteamento</b> usa a máquina invadida como ponte para uma rede que não era acessível de fora; <b>persistência</b> mantém o acesso.</p><p>Em teste de intrusão, persistência é usada com parcimônia e sempre documentada — todo artefato deixado precisa ser removido ao fim e listado no relatório, para o cliente confirmar a limpeza. Deixar canal de acesso não documentado num cliente é falha grave de conduta, não esperteza.</p>",
+  w:"Esquecer artefato de persistência no ambiente do cliente. Vira porta dos fundos real e responsabilidade sua — documente e remova tudo."},
+ {t:"Active Directory: Kerberoasting, delegação e abuso de ACL",
+  d:"<p>A maioria das redes corporativas é Active Directory, e a maioria dos comprometimentos internos passa por ele. Os caminhos clássicos: <b>Kerberoasting</b> (pedir tíquete de serviço e quebrar a senha da conta de serviço offline), abuso de <b>delegação</b> mal configurada, e cadeias de <b>ACL</b> que permitem, passo a passo, chegar a administrador de domínio.</p><p>O <b>BloodHound</b> mudou o jogo ao transformar essas relações num grafo: ele mostra o caminho mais curto de onde você está até \"Domain Admin\". Entender por que cada aresta existe — e como fechá-la — é o que interessa tanto ao time vermelho quanto ao azul.</p>",
+  c:"<b># coleta e análise de caminhos (em laboratório)</b>\n# coletor roda no domínio, gera o grafo; o BloodHound acha a rota\n# consultas típicas:\n#   \"caminho mais curto até Domain Admins\"\n#   \"contas com SPN\" (alvo de Kerberoasting)\n#   \"quem pode redefinir senha de quem\"",
+  w:"Estudar AD só pela ofensiva. Quem entende os caminhos de ataque escreve as melhores defesas — as duas leituras se reforçam."},
+ {t:"Relatório: evidência, impacto de negócio, remediação priorizada",
+  d:"<p>O relatório é o entregável. Um shell que ninguém consegue reproduzir e uma lista de CVEs sem contexto não mudam nada. O relatório profissional tem: <b>resumo executivo</b> em linguagem de negócio (o que o risco significa para a empresa), <b>metodologia</b>, e para cada achado — descrição, evidência reproduzível, impacto real naquele ambiente, severidade justificada e <b>remediação priorizada e acionável</b>.</p><p>Priorizar é o que o cliente mais valoriza: não \"conserte estas 40 coisas\", mas \"comece por estas 3, que juntas fecham o caminho até o domínio\". Um bom relatório é lido pela diretoria e pela equipe técnica, e serve aos dois. Escrever bem é, literalmente, metade da profissão.</p>",
+  w:"Ordenar achados por nota CVSS. Ordene por caminho de ataque: a falha média que completa a cadeia até administrador vale mais que a crítica isolada e inalcançável."}
+ ]};
+
+/* ================== TRILHA 06 — DEFESA ================== */
+const T6 = {
+ n:"Defesa", lvl:"a", lvlTxt:"Avançado", h:18,
+ goal:"Detectar, conter e aprender. Time azul não ganha impedindo tudo — ganha reduzindo o tempo entre a invasão e a resposta.",
+ lab:"Monte um SIEM local (Wazuh ou a pilha Elastic), gere um ataque conhecido contra uma VM sua e escreva a regra Sigma que o detecta. Depois ajuste até zerar o falso positivo sem perder a detecção — esse ajuste é o trabalho real.",
+ links:[["Sigma HQ","https://github.com/SigmaHQ/sigma"],["Wazuh Docs","https://documentation.wazuh.com/"],["NIST SP 800-61r2","https://csrc.nist.gov/pubs/sp/800/61/r2/final"],["MITRE D3FEND","https://d3fend.mitre.org/"],["The DFIR Report","https://thedfirreport.com/"],["CISA KEV","https://www.cisa.gov/known-exploited-vulnerabilities-catalog"],["LOLBAS","https://lolbas-project.github.io/"]],
+ tags:["Sigma","Wazuh","Velociraptor","NIST 800-61","MTTD"],
+ t:[
+ {t:"Fontes de log: sistema, rede, aplicação e nuvem",
+  d:"<p>Detecção começa em ter o dado certo. As fontes de maior valor: <b>endpoint</b> (criação de processo com linha de comando completa, é o que mais revela ataque), <b>autenticação</b> (login, falha, privilégio), <b>rede</b> (DNS, fluxo, proxy), <b>aplicação</b> e <b>nuvem</b> (CloudTrail e equivalentes registram cada chamada de API à conta).</p><p>Coletar tudo é caro e inútil; coletar de menos é ficar cego. A abordagem madura parte das técnicas de ATT&CK que importam ao seu ambiente e pergunta, para cada uma: que log a evidenciaria? Isso define o que coletar, com propósito.</p><p>No Windows, criação de processo com linha de comando (e o Sysmon) muda o nível do jogo; a maioria dos ambientes tem esse log desligado e não sabe.</p>",
+  w:"Ligar coleta sem definir retenção. Investigação real precisa de meses de log; guardar 7 dias é descobrir a intrusão e não ter como reconstruí-la."},
+ {t:"Normalização, enriquecimento e correlação em SIEM",
+  d:"<p>Log cru vem em mil formatos. O SIEM <b>normaliza</b> para um esquema comum (um campo \"usuário\" significa o mesmo venha de onde vier), <b>enriquece</b> (adiciona geolocalização, reputação de IP, dono do ativo, categoria do usuário) e <b>correlaciona</b> (junta eventos que isolados não dizem nada).</p><p>O valor está na correlação: um login que falha não é nada; cem falhas seguidas de um sucesso, de um país novo, para uma conta administrativa, fora do horário, é uma história. A regra que cruza esses sinais vale mais que mil alertas atômicos.</p>",
+  c:"<b># pseudo-regra de correlação: força bruta bem-sucedida</b>\nSE contagem(auth_falha por usuario_destino) >= 20 em 5 min\n   SEGUIDO DE auth_sucesso(mesmo usuario, mesmo ip_origem)\nENTÃO alerta(\"provável força bruta bem-sucedida\", severidade=alta)",
+  w:"Comprar SIEM e esperar que ele detecte sozinho. SIEM é plataforma; detecção é conteúdo que a sua equipe escreve e mantém."},
+ {t:"Engenharia de detecção com regras Sigma mapeadas ao ATT&CK",
+  d:"<p><b>Sigma</b> é o formato aberto de regra de detecção: você escreve uma vez, em YAML, e converte para a linguagem do seu SIEM. Isso libertou a comunidade de detecção do aprisionamento a um produto — regras públicas do SigmaHQ são ponto de partida excelente.</p><p>Boa engenharia de detecção trata regra como código: versionada, testada contra ataque real e contra tráfego normal, mapeada à técnica ATT&CK que cobre, e revisada quando o falso positivo aparece. Cada regra tem um dono e um destino claro — quem recebe o alerta e o que faz com ele.</p>",
+  c:"<b># regra Sigma — descoberta pós-invasão (Windows)</b>\ntitle: Sequência de reconhecimento interno\nlogsource: { product: windows, category: process_creation }\ndetection:\n  selecao:\n    Image|endswith: ['\\whoami.exe','\\net.exe','\\ipconfig.exe']\n  condicao: selecao | count() by Host > 3 dentro de 1m\nlevel: medium\ntags: [attack.discovery]",
+  w:"Acumular regras e nunca aposentar nenhuma. Regra que só gera falso positivo é pior que regra nenhuma — ela treina o analista a ignorar."},
+ {t:"Caça a ameaças orientada por hipótese",
+  d:"<p>Caça (threat hunting) é procurar o que passou pela detecção automática. Não é vagar pelos logs: parte de uma <b>hipótese</b> baseada em conhecimento do adversário — \"se um atacante estivesse usando esta técnica de persistência, veríamos este artefato aqui\" — e busca confirmá-la ou descartá-la.</p><p>Toda caça tem dois resultados úteis: ou acha algo, ou vira detecção nova. Se você caçou uma técnica manualmente e ela não estava coberta, o produto da caça é uma regra Sigma que passa a cobri-la para sempre. Caça alimenta detecção; as duas crescem juntas.</p>",
+  w:"Caçar sem hipótese e sem registrar o que foi verificado. Vira esforço não repetível — e não deixa detecção nova para trás."},
+ {t:"Resposta a incidente NIST SP 800-61 e suas quatro fases",
+  d:"<p>O NIST SP 800-61 estrutura a resposta em quatro fases: <b>Preparação</b> (feita antes — plano, contatos, acesso, ferramenta); <b>Detecção e Análise</b> (confirmar que é incidente e entender o alcance); <b>Contenção, Erradicação e Recuperação</b>; e <b>Atividade Pós-Incidente</b> (a lição aprendida).</p><p>A preparação é a fase que decide o resultado das outras — quem monta o plano durante o incidente já perdeu. E a pós-incidente é a mais pulada e a mais valiosa: a retrospectiva sem culpados que transforma o incidente de hoje em detecção e controle de amanhã.</p>",
+  c:"<b># ordem que evita erro sob pressão</b>\n1. Preparação        (antes: plano, contatos, acessos, backups testados)\n2. Detecção/Análise  (é incidente? qual o alcance? preservar evidência)\n3. Contenção         (isolar sem destruir prova) → Erradicação → Recuperação\n4. Pós-incidente     (retrospectiva sem culpados → nova detecção)",
+  w:"Escrever o plano depois do primeiro incidente. A hora de preparar é quando não está pegando fogo."},
+ {t:"Contenção, erradicação e recuperação sem destruir evidência",
+  d:"<p>O instinto de \"desliga e reinstala\" destrói a evidência que diria como o atacante entrou — e sem isso ele volta pela mesma porta. A sequência correta preserva antes de agir: colete memória e artefatos voláteis, isole o host da rede (sem desligar, quando possível), só então erradique.</p><p><b>Contenção</b> impede o alastramento. <b>Erradicação</b> remove a presença do atacante — e exige ter entendido o alcance, senão sobra acesso. <b>Recuperação</b> restaura a operação a partir de estado sabidamente limpo, com monitoramento reforçado, porque reinfecção é comum. Restaurar de backup que já continha a porta dos fundos é o erro que faz o incidente recomeçar.</p>",
+  w:"Conter isolando e, no susto, reiniciar a máquina. Reiniciar apaga a memória — onde mora boa parte da evidência de como o ataque funcionou."},
+ {t:"Forense: ordem de volatilidade e cadeia de custódia",
+  d:"<p>Forense preserva e analisa evidência de forma que ela sirva depois — inclusive judicialmente. Dois princípios governam tudo. <b>Ordem de volatilidade</b>: colete primeiro o que some primeiro — memória e conexões antes de disco, disco antes de backup arquivado. <b>Cadeia de custódia</b>: registro de quem tocou a evidência, quando e como, com hash para provar que nada foi alterado.</p><p>Trabalhe sempre sobre cópia (imagem) verificada por hash, nunca sobre o original. Um único passo em falso na custódia pode invalidar toda a prova — por isso o processo é tão ritualizado.</p>",
+  c:"<b># imagem verificável e a prova de integridade</b>\ndd if=/dev/sdb of=evidencia.img bs=4M conv=noerror,sync status=progress\nsha256sum evidencia.img > evidencia.img.sha256\n# toda análise ocorre sobre uma cópia; o original fica lacrado",
+  w:"Analisar direto no disco original \"só para dar uma olhada\". Cada leitura pode alterar carimbo de tempo e comprometer a prova."},
+ {t:"Hardening, baseline e gestão contínua de vulnerabilidade",
+  d:"<p>A defesa mais barata é reduzir o que pode dar errado antes que dê. <b>Hardening</b> segue referências prontas (CIS Benchmarks, guias STIG) para desligar serviço desnecessário, fechar padrão inseguro e aplicar configuração recomendada. <b>Baseline</b> é o retrato do estado bom conhecido — sem ele, você não percebe o desvio.</p><p><b>Gestão contínua de vulnerabilidade</b> é ciclo, não projeto: inventariar, avaliar, priorizar (KEV e exposição primeiro), corrigir, verificar, repetir. O objetivo não é zerar a lista — é manter o risco alcançável sempre baixo e reduzir o tempo entre a correção existir e ela estar aplicada.</p>",
+  w:"Fazer hardening uma vez e considerar pronto. Configuração deriva com o tempo; sem verificação contínua, o baseline vira ficção."},
+ {t:"Métricas que importam: MTTD, MTTR e taxa de falso positivo",
+  d:"<p>O que não se mede não melhora — mas a métrica errada engana. <b>MTTD</b> (tempo médio até detectar) e <b>MTTR</b> (até responder) são os números que o time azul de fato otimiza: quanto menor a janela entre invasão e reação, menor o dano, quase independentemente de como o atacante entrou.</p><p>A <b>taxa de falso positivo</b> é a métrica de saúde do sistema de detecção: alta demais e os analistas se esgotam e passam a ignorar alerta — inclusive o verdadeiro. \"Número de alertas\" e \"vulnerabilidades fechadas\" são métricas de vaidade: sobem sem que a segurança melhore. Prefira medir tempo de janela e cobertura real de técnicas de ATT&CK.</p>",
+  w:"Reportar \"10 mil alertas tratados\" como sucesso. É volume, não resultado — pode significar apenas que o sistema grita demais."}
+ ]};
+
+/* consolida em ordem */
+const TRILHAS = [T1, T2, T3, T4, T5, T6];
+</script>
+<script>
+/* ================== AULAS ADICIONAIS (v3) ================== */
+/* Fundamentos */
+T1.t.push(
+ {t:"Engenharia social: o ataque que ignora a tecnologia",
+  d:"<p>A camada mais explorada não é o firewall — é a pessoa. Engenharia social manipula gatilhos humanos: <b>autoridade</b> (\"é o diretor pedindo\"), <b>urgência</b> (\"tem que ser agora\"), <b>prova social</b> (\"todo mundo já fez\") e <b>reciprocidade</b>. Phishing, vishing (voz), smishing (SMS) e pretexting são só embalagens do mesmo mecanismo.</p><p>A defesa técnica ajuda — MFA resistente a phishing, DMARC no e-mail, filtro — mas o controle decisivo é processo: verificação por canal independente para pedido sensível (nunca aprovar transferência só porque o e-mail pediu), e uma cultura em que relatar um clique suspeito não gera punição. Quem pune o funcionário que reporta garante que o próximo não reporte.</p>",
+  w:"Treinar phishing para envergonhar quem cai. O objetivo é medir e melhorar o processo, não caçar culpado — programa punitivo destrói justamente o relato que salva."},
+ {t:"Governança, LGPD e o vínculo entre segurança e conformidade",
+  d:"<p>Segurança protege o sistema; conformidade prova que você protegeu, para quem cobra. No Brasil, a <b>LGPD</b> (Lei 13.709/2018) rege dado pessoal: exige base legal para tratar, minimização (coletar só o necessário), e comunicação de incidente à ANPD e ao titular quando há risco. Vazamento não é só problema técnico — é obrigação legal com prazo e multa.</p><p>Conceitos que aparecem em toda auditoria: <b>controlador</b> e <b>operador</b> (quem decide e quem processa), <b>DPO/encarregado</b> (o ponto de contato), <b>relatório de impacto</b> (RIPD). Frameworks como ISO 27001, NIST CSF e SOC 2 organizam os controles que sustentam essa prova. Entender isso é o que separa o técnico do profissional que conversa com jurídico e diretoria.</p>",
+  w:"Tratar conformidade como papelada separada da engenharia. Controle que existe só no documento e não no sistema é risco disfarçado de tranquilidade."},
+ {t:"Nuvem: o modelo de responsabilidade compartilhada",
+  d:"<p>Na nuvem, a segurança é dividida — e a maioria dos incidentes mora na fronteira mal entendida. O provedor cuida da segurança <i>da</i> nuvem (data center, hardware, hipervisor); você cuida da segurança <i>na</i> nuvem (sua configuração, seus dados, seus acessos, seu código). Bucket público e credencial exposta são <b>sempre</b> do lado do cliente.</p><p>A linha muda com o modelo: em IaaS você gerencia sistema operacional para cima; em PaaS, aplicação e dado; em SaaS, basicamente só configuração de acesso. Errar de quem é a responsabilidade é a causa raiz de boa parte dos vazamentos famosos — o cliente achou que o provedor cuidava.</p>",
+  c:"<b># o que é SEMPRE sua responsabilidade, em qualquer modelo</b>\n- identidade e acesso (IAM): quem pode o quê\n- configuração dos serviços (bucket privado, cifra ligada)\n- classificação e proteção do seu dado\n- gestão das suas credenciais e chaves",
+  w:"Assumir que \"está na nuvem, então é seguro\". O provedor entrega ferramenta segura; usar errado continua sendo comprometimento — e a conta é sua."}
+);
+T1.h = 15;
+
+/* Redes */
+T2.t.push(
+ {t:"VPN, IPsec e WireGuard: túnel cifrado entre redes",
+  d:"<p>VPN cria um túnel cifrado sobre rede não confiável, unindo host a rede (acesso remoto) ou rede a rede (site a site). <b>IPsec</b> é o padrão clássico, robusto e complexo, com duas fases de negociação (IKE) e vários modos. <b>WireGuard</b> é a geração nova: código minúsculo, criptografia moderna fixa (Curve25519, ChaCha20), configuração de poucas linhas e desempenho superior — virou o padrão de fato para novos projetos.</p><p>Ponto que se esquece: VPN protege o transporte, não o endpoint. Máquina comprometida com VPN ativa só entrega ao atacante um túnel confiável para dentro da rede. E VPN ampla demais recria a rede plana que a segmentação tentou evitar — o acesso remoto deveria ser tão segmentado quanto o resto.</p>",
+  c:"<b># WireGuard — um peer, resumido</b>\n[Interface]\nPrivateKey = &lt;chave privada&gt;\nAddress    = 10.8.0.2/24\n[Peer]\nPublicKey  = &lt;chave pública do servidor&gt;\nEndpoint   = vpn.exemplo.com:51820\nAllowedIPs = 10.8.0.0/24     # só a rota necessária, não 0.0.0.0/0",
+  w:"Dar VPN com acesso a tudo \"para simplificar\". Túnel cifrado até a rede inteira é exatamente o alvo dos sequestros de credencial de acesso remoto."},
+ {t:"Wi-Fi: WPA2, WPA3 e onde a rede sem fio quebra",
+  d:"<p>Rede sem fio adiciona um meio que qualquer um ao alcance escuta. <b>WPA2</b> ainda domina, mas seu handshake pode ser capturado e atacado offline por dicionário — senha fraca de Wi-Fi cai. <b>WPA3</b> corrige isso com o handshake SAE (Dragonfly), que resiste a ataque offline, e traz cifra individualizada em rede aberta.</p><p>Vetores clássicos: <b>ponto de acesso gêmeo do mal</b> (rede falsa com o mesmo nome, para interceptar), <b>portal cativo</b> falsificado, e o risco de conectar automaticamente a redes conhecidas. Em ambiente corporativo, a resposta é WPA2/WPA3-Enterprise com autenticação por certificado (EAP-TLS) em vez de senha compartilhada — e rede de visitante sempre isolada da rede interna.</p>",
+  w:"Confiar no nome da rede. SSID é só um texto — o gêmeo do mal usa exatamente o seu nome. Autenticação mútua por certificado é o que impede a farsa."},
+ {t:"Confiança zero e microssegmentação na prática",
+  d:"<p>O modelo antigo era o castelo com fosso: dura por fora, mole por dentro. Quem furava o perímetro andava à vontade. <b>Confiança zero</b> abandona a ideia de rede interna confiável: toda requisição é autenticada, autorizada e cifrada, independentemente de onde vem — \"nunca confie, sempre verifique\".</p><p><b>Microssegmentação</b> é a implementação em rede: em vez de grandes zonas, políticas finas entre cargas de trabalho, de modo que um serviço comprometido não alcance os vizinhos por padrão. A identidade da carga (não o endereço IP) vira a base da política. É o controle que mais limita o movimento lateral — a fase em que um incidente pequeno vira grande.</p>",
+  w:"Comprar \"produto zero trust\" e manter a rede plana atrás dele. Confiança zero é arquitetura e política, não uma caixa que se liga."}
+);
+T2.h = 25;
+
+/* Criptografia */
+T3.t.push(
+ {t:"Criptografia pós-quântica: por que a migração já começou",
+  d:"<p>Um computador quântico grande o suficiente quebraria RSA e curvas elípticas usando o algoritmo de Shor. Ele ainda não existe em escala útil — mas a ameaça é presente por causa do <b>\"grave agora, decifre depois\"</b>: um adversário pode capturar tráfego cifrado hoje e guardar para decifrar quando a máquina existir. Dado com valor de longo prazo já está em risco.</p><p>Por isso o NIST padronizou algoritmos resistentes a quântico — <b>ML-KEM</b> (Kyber) para troca de chave e <b>ML-DSA</b> (Dilithium) para assinatura — e navegadores e bibliotecas já implementam troca de chave <b>híbrida</b> (clássica + pós-quântica ao mesmo tempo), que só quebra se as duas quebrarem. Simétrica (AES) e hash (SHA-2/3) seguem seguros dobrando parâmetros; o problema é a assimétrica.</p>",
+  w:"Adiar a migração por \"não existe computador quântico ainda\". O risco de captura para decifração futura é hoje — para dado de vida longa, esperar é a decisão errada."},
+ {t:"Gerenciamento de chaves: KMS, HSM e rotação",
+  d:"<p>A criptografia mais forte cai se a chave estiver no repositório. Gerenciamento de chaves é o que quase todo mundo subestima. Um <b>HSM</b> é hardware que gera, guarda e usa a chave sem nunca exportá-la — a operação acontece dentro do dispositivo. Um <b>KMS</b> (na nuvem ou próprio, como o Vault) oferece isso como serviço, com controle de acesso e auditoria.</p><p>Práticas que definem maturidade: chave nunca em código nem em variável de ambiente em claro; <b>rotação</b> periódica e automática; separação por propósito (a chave que cifra backup não é a que assina token); e <b>envelope encryption</b> — cifrar o dado com uma chave de dados, e cifrar essa chave com uma chave-mestra no KMS, para rotacionar a mestra sem recifrar tudo.</p>",
+  c:"<b># envelope encryption, o padrão da nuvem</b>\n1. KMS gera uma chave de dados (DEK), devolve em claro + cifrada\n2. cifra o dado com a DEK em claro, descarta a DEK em claro\n3. guarda o dado cifrado + a DEK cifrada juntos\n4. para ler: KMS decifra a DEK; a DEK decifra o dado\n# rotacionar a chave-mestra não exige recifrar todo o dado",
+  w:"Rotacionar chave e jogar fora a antiga. Dado cifrado com a chave velha precisa dela para ser lido — rotação exige plano de recifragem ou versionamento de chave."},
+ {t:"TOTP, HOTP e passkeys: o segundo fator por dentro",
+  d:"<p>O código de seis dígitos do aplicativo autenticador é <b>TOTP</b>: um HMAC de um segredo compartilhado com o carimbo de tempo atual, truncado a seis dígitos, que muda a cada 30 segundos. <b>HOTP</b> é a variante baseada em contador. Ambos são melhores que SMS, mas ainda são phishable — o site falso pede o código e o repassa em tempo real.</p><p>As <b>passkeys</b> (WebAuthn/FIDO2) fecham esse buraco: em vez de um segredo que você digita, o navegador assina um desafio com uma chave privada ligada à origem do site. No site falso, a assinatura simplesmente não é produzida — não há o que repassar. É o padrão que finalmente torna o phishing de credencial inútil, e já é suportado por todos os grandes.</p>",
+  c:"<b># TOTP por dentro (RFC 6238)</b>\ncontador = floor(tempo_unix / 30)\nhmac     = HMAC-SHA1(segredo, contador)\ncodigo   = truncar_dinamico(hmac) % 10^6   # os 6 dígitos\n# o segredo é compartilhado no cadastro (o QR code)",
+  w:"Chamar TOTP de \"à prova de phishing\". Não é — o código é digitável e repassável. Só a assinatura ligada à origem (passkey) resiste."}
+);
+T3.h = 21;
+
+/* Segurança Web */
+T4.t.push(
+ {t:"Segurança de API: REST, GraphQL e limite de taxa",
+  d:"<p>APIs são a superfície que mais cresce e têm um Top 10 próprio na OWASP. O risco número um é o mesmo da web — autorização quebrada em nível de objeto (<b>BOLA</b>): a API entrega o recurso pelo id sem checar se ele é seu. Some a isso <b>exposição excessiva de dados</b> (o endpoint devolve o objeto inteiro e o front esconde campos — o atacante lê a resposta crua) e falta de <b>limite de taxa</b>.</p><p><b>GraphQL</b> adiciona os seus: uma consulta profundamente aninhada pode custar caríssimo (negação de serviço por complexidade), e a introspecção liga o esquema inteiro para quem perguntar. Defesas: autorização por objeto no resolver, limite de profundidade e de custo de consulta, devolver só os campos necessários, e limite de taxa por identidade — não só por IP, que rotaciona fácil.</p>",
+  c:"<b># exposição excessiva — o back devolve tudo</b>\nGET /api/usuarios/42\n→ { id, nome, email, cpf, hash_senha, is_admin, ... }\n# o front mostra só o nome; o atacante lê a resposta inteira\n\n<b># correto: projetar a saída</b>\n→ { id, nome, avatar }   # só o que aquela tela precisa",
+  w:"Proteger a API só por rate limit de IP. Atacante distribui a origem; o limite precisa ser por conta/token, e a autorização, por objeto."},
+ {t:"Condições de corrida e TOCTOU em aplicações web",
+  d:"<p>Nem toda falha é de entrada — algumas são de <i>tempo</i>. Uma condição de corrida acontece quando duas requisições simultâneas passam pela mesma verificação antes de qualquer uma completar a ação. O nome técnico é <b>TOCTOU</b> (time-of-check to time-of-use): o intervalo entre verificar e usar é a janela do ataque.</p><p>Casos reais: resgatar o mesmo cupom ou saldo várias vezes disparando requisições em paralelo; sacar mais do que o limite porque dez saques leem o saldo antigo ao mesmo tempo; usar um convite de uso único N vezes. A defesa não é validar melhor — é tornar a operação atômica: bloqueio no banco, transação com isolamento adequado, ou operação condicional (\"debitar SE saldo >= valor\") em um único passo indivisível.</p>",
+  c:"<b># vulnerável: checar e agir em passos separados</b>\nsaldo = ler(conta)          # dez requisições leem 100\nse saldo >= valor: debitar(conta, valor)   # todas debitam\n\n<b># atômico: uma operação condicional indivisível</b>\nUPDATE contas SET saldo = saldo - :v\n WHERE id = :id AND saldo >= :v    # só uma vence",
+  w:"Reproduzir o bug uma vez, ver que \"funciona\", e fechar. Corrida é intermitente por natureza — precisa de teste concorrente, não de um clique."},
+ {t:"Segredos, dependências e o pipeline como alvo",
+  d:"<p>Boa parte dos vazamentos não começa na aplicação em produção — começa no <b>pipeline</b>. Segredo commitado no Git (chave de API, token, senha) fica no histórico para sempre e é varrido por bots minutos após o push. Dependência com falha conhecida ou, pior, comprometida por ataque de cadeia de suprimentos, entra pelo <code>npm install</code>.</p><p>Defesas que a edição 2025 do OWASP elevou a categoria própria (A03): <b>varredura de segredo</b> antes do commit e no histórico; <b>SBOM</b> e atualização automatizada com alerta; versão <b>fixada por hash</b>, não por faixa; ações de CI de terceiro presas a commit específico; e o princípio de menor privilégio também no pipeline — o runner de CI costuma ter credencial poderosa e ser pouco vigiado.</p>",
+  c:"<b># antes de todo commit e no histórico</b>\ngit secrets --scan            # ou gitleaks / trufflehog\n\n<b># fixar dependência por hash, não por faixa</b>\n# package-lock / requirements com hash; renovar via bot com revisão\n\n<b># se um segredo vazou: rotacione JÁ — remover do histórico não basta</b>",
+  w:"\"Removi o segredo no commit seguinte.\" Ele continua no histórico e já foi copiado. A única resposta correta a segredo exposto é rotacionar a credencial."}
+);
+T4.h = 30;
+
+/* Ofensiva */
+T5.t.push(
+ {t:"Phishing controlado e engenharia social em engajamento",
+  d:"<p>Quando o escopo permite, engenharia social mede a resistência humana da organização — sob regra estrita. Um exercício de phishing controlado tem objetivo definido (taxa de clique, de credencial, de relato), infraestrutura própria, e nunca coleta a senha real: a página de captura registra que a pessoa <i>enviaria</i>, sem armazenar o segredo.</p><p>O produto não é a lista de quem clicou — é a métrica agregada e a recomendação: onde o processo falhou, que treinamento aplicar, que controle técnico (MFA resistente a phishing, DMARC) teria barrado. Conduta profissional exige cláusula específica no contrato, cuidado redobrado com dado pessoal (LGPD) e relatório que melhora o sistema em vez de expor indivíduos.</p>",
+  w:"Guardar as credenciais capturadas \"para provar\". Isso é coletar senha real de funcionário — passivo legal enorme e desnecessário; registre só o evento, nunca o segredo."},
+ {t:"Red team: wireless, físico e a operação completa",
+  d:"<p>Teste de intrusão busca vulnerabilidades num escopo; <b>red team</b> emula um adversário real contra um objetivo (\"chegar ao banco de dados de clientes\") por qualquer caminho autorizado, testando também a <i>detecção</i> — o time azul não sabe que é exercício. É mais amplo e mais furtivo.</p><p>Isso traz vetores que o pentest clássico não cobre: <b>wireless</b> (invadir pela rede sem fio ou por gêmeo do mal), <b>físico</b> (acesso ao prédio, dispositivo plantado, clonagem de crachá) e <b>social</b> combinados numa única operação encadeada. Cada um exige autorização específica e explícita — \"carta de saída da prisão\" documentando que o operador está autorizado, para o caso de ser abordado durante o exercício físico.</p>",
+  w:"Iniciar componente físico ou wireless sem autorização por escrito específica e sem a carta de autorização em mãos. Sem isso, arrombamento e invasão são exatamente o que parecem."},
+ {t:"Comando e controle e evasão: a perspectiva defensiva",
+  d:"<p>Depois do acesso, o adversário precisa de um canal de <b>comando e controle</b> (C2) para operar o host. Estruturas de C2 (usadas legitimamente por red teams) escondem esse canal imitando tráfego normal: HTTPS para domínio de aparência legítima, DNS, ou serviços de nuvem conhecidos, com intervalos irregulares (jitter) para não parecer batimento de máquina.</p><p>Estudar evasão aqui é para <b>defender</b>: entender que a detecção moderna olha comportamento e metadado, não assinatura de arquivo — conexões periódicas a domínio recém-registrado, processo que não deveria falar com a internet fazendo isso, volume de saída anômalo. É a razão pela qual controlar o tráfego de <i>saída</i> e monitorar o endpoint valem mais que confiar no antivírus.</p>",
+  w:"Estudar C2 só pela ofensiva, colecionando ferramenta. O valor durável é a intuição defensiva: saber que sinal cada técnica de evasão deixa, para caçá-lo."}
+);
+T5.h = 27;
+
+/* Defesa */
+T6.t.push(
+ {t:"Backup, resiliência e recuperação de desastre",
+  d:"<p>O último controle contra ransomware e contra o próprio erro humano é o backup — mas só se ele funcionar quando importa. A regra <b>3-2-1</b>: três cópias, em dois tipos de mídia, com uma fora do local. E hoje soma-se o <b>imutável/offline</b>: cópia que o atacante não consegue apagar mesmo com acesso administrativo, porque ransomware moderno procura e destrói o backup antes de cifrar.</p><p>Dois números guiam o plano: <b>RPO</b> (quanto dado você aceita perder — define a frequência do backup) e <b>RTO</b> (em quanto tempo precisa voltar — define a arquitetura de recuperação). E a regra que mais dói ignorar: <b>backup não testado não é backup</b>. Restauração precisa ser exercitada periodicamente; muita empresa descobriu no incidente que a cópia estava corrompida ou incompleta.</p>",
+  c:"<b># regra 3-2-1-1</b>\n3 cópias do dado\n2 mídias diferentes\n1 cópia fora do local (offsite)\n1 cópia imutável ou offline (à prova de ransomware)\n# e: TESTAR a restauração de verdade, com calendário",
+  w:"Confiar na existência do backup sem nunca restaurar. A hora de descobrir que a cópia não presta não é durante o incidente."},
+ {t:"Inteligência de ameaças: do indicador ao comportamento",
+  d:"<p>Inteligência de ameaças (CTI) transforma dado bruto sobre adversários em decisão. Ela opera em níveis: <b>tático</b> (indicadores — hash, domínio, IP — para alimentar detecção), <b>operacional</b> (as TTPs de um grupo, mais duráveis que indicador) e <b>estratégico</b> (quem provavelmente ataca o seu setor, para priorizar).</p><p>A <b>pirâmide da dor</b> organiza isso: bloquear um hash incomoda pouco o atacante (ele recompila); bloquear a TTP dói de verdade (ele teria que mudar o modo de operar). Por isso a detecção madura investe em comportamento, não em lista de IOC — que envelhece em horas. Fontes gratuitas de qualidade existem: MITRE ATT&CK, relatórios do DFIR Report, feeds abertos, o KEV da CISA. O erro é consumir feed sem contextualizar para o próprio ambiente.</p>",
+  w:"Assinar dez feeds de IOC e mandar tudo para o SIEM. Indicador sem contexto gera ruído e envelhece rápido; priorize TTP e o que é relevante ao seu setor."},
+ {t:"Segurança em nuvem: identidade, configuração e trilha de auditoria",
+  d:"<p>Na nuvem, o perímetro é a <b>identidade</b>. A maioria dos incidentes não é exploração exótica — é credencial vazada, permissão ampla demais e configuração errada. Os pilares: IAM com menor privilégio e sem chave de longa duração (preferir credencial temporária e federação); <b>CSPM</b> para detectar configuração insegura continuamente (bucket público, grupo de segurança aberto, cifra desligada); e a <b>trilha de auditoria</b> sempre ligada.</p><p>Essa trilha — CloudTrail na AWS e equivalentes — registra cada chamada de API à conta e é a fonte primária de investigação: sem ela, você não sabe o que o atacante fez depois de entrar. Deve ir para um destino que a própria conta comprometida não consiga apagar. E o serviço de metadados de instância (alvo de SSRF, visto na trilha web) exige a versão endurecida (IMDSv2) por padrão.</p>",
+  c:"<b># higiene mínima de conta na nuvem</b>\n- MFA em toda conta humana; zero chave de acesso de longa duração\n- trilha de auditoria (CloudTrail) ligada, em conta/bucket separado e imutável\n- CSPM varrendo configuração; alerta para bucket público e porta 22/3389 aberta\n- IMDSv2 obrigatório; papéis por serviço, nunca credencial reaproveitada",
+  w:"Deixar a trilha de auditoria na mesma conta que ela audita, sem proteção. O primeiro ato de um invasor competente é apagar o log — mande-o para fora do alcance dele."}
+);
+T6.h = 21;
+</script>
+<script>
+/* ================== OWASP TOP 10 : 2025 ================== */
+const OWASP = [
+ {id:"A01", n:"Controle de acesso quebrado", delta:"mantido · nº1",
+  s:"O servidor confia num identificador ou papel que o usuário controla. Agora inclui SSRF, BOLA e BFLA.",
+  v:"Trocar <code>/pedido/1042</code> por <code>/pedido/1043</code> e ver o pedido de outra pessoa (IDOR/BOLA).",
+  f:"Decidir autorização no servidor, por objeto, a cada requisição. Negar por padrão; centralizar a checagem."},
+ {id:"A02", n:"Configuração incorreta", delta:"subiu de nº5",
+  s:"O padrão de fábrica virou o padrão de produção. Saltou para o segundo lugar em 2025.",
+  v:"Painel administrativo exposto, credencial padrão, <code>DEBUG=True</code>, bucket público, cabeçalho ausente.",
+  f:"Baseline endurecido (CIS), infraestrutura como código e varredura contínua de configuração."},
+ {id:"A03", n:"Falhas na cadeia de suprimentos", delta:"NOVO em 2025",
+  s:"Expansão do antigo \"componentes vulneráveis\": agora cobre todo o pipeline de build e distribuição.",
+  v:"Dependência transitiva comprometida, ação de CI de terceiro sem versão fixada, artefato não assinado.",
+  f:"Inventário (SBOM), versão fixada por hash, assinatura de artefato e verificação obrigatória no build."},
+ {id:"A04", n:"Falha criptográfica", delta:"caiu de nº2",
+  s:"Dado sensível trafega ou repousa sem proteção adequada.",
+  v:"Senha em <code>SHA-256</code> puro, tráfego interno sem TLS por ser \"rede confiável\", nonce reusado.",
+  f:"TLS em todo trajeto, Argon2id para senha, AES-GCM em repouso, chave em cofre."},
+ {id:"A05", n:"Injeção", delta:"caiu de nº3",
+  s:"Entrada do usuário vira instrução em vez de dado. Inclui SQL, NoSQL, comando de SO e XSS.",
+  v:"<code>\"SELECT * FROM u WHERE id=\" + id</code> recebendo <code>1 OR 1=1</code>; <code>innerHTML</code> com dado do usuário.",
+  f:"Consulta parametrizada sempre. Codificação na saída específica do contexto. Validar na entrada não basta sozinho."},
+ {id:"A06", n:"Design inseguro", delta:"caiu de nº4",
+  s:"A falha está na regra de negócio, não no código. Nenhum scanner encontra.",
+  v:"Recuperação de conta por pergunta cuja resposta está no perfil público; fluxo sem limite de valor.",
+  f:"Modelagem de ameaças (STRIDE) na fase de desenho e caso de abuso escrito junto do caso de uso."},
+ {id:"A07", n:"Falha de autenticação", delta:"mantido · renomeado",
+  s:"Autenticação existe, mas cede a força bruta, a reuso de credencial ou a sessão mal gerida.",
+  v:"Login sem limite de tentativa aceitando senha já vazada em incidente de outro serviço.",
+  f:"MFA resistente a phishing, limite com atraso progressivo, bloqueio de senha em lista de vazamento."},
+ {id:"A08", n:"Falha de integridade de software ou dados", delta:"mantido",
+  s:"Código ou dado é aceito sem verificar quem produziu.",
+  v:"Atualização automática por HTTP sem assinatura; desserialização de objeto vindo do cliente.",
+  f:"Assinatura de artefato, versão fixada com hash, e nunca desserializar dado não confiável."},
+ {id:"A09", n:"Falha em registro e alerta", delta:"mantido · renomeado",
+  s:"O ataque acontece e ninguém fica sabendo a tempo.",
+  v:"Login falho não registrado; alerta enviado a uma caixa que ninguém lê há oito meses.",
+  f:"Log com contexto e retenção adequada, alerta com dono, e teste periódico da própria detecção."},
+ {id:"A10", n:"Tratamento incorreto de condições excepcionais", delta:"NOVO em 2025",
+  s:"Erro, exceção e caso-limite mal tratados: falha que se abre, lógica que cede sob condição inesperada.",
+  v:"Verificação que falha \"aberta\" (libera o acesso ao dar erro); exceção que expõe stack trace ou estado.",
+  f:"Falhar fechado por padrão, tratar exceção explicitamente, e nunca vazar detalhe interno na mensagem de erro."}
+];
+
+/* ================== QUIZ — 12 questões ================== */
+const QUIZ = [
+ {q:"Um invasor altera silenciosamente o valor de um registro no banco. Qual propriedade da tríade CIA foi violada?",
+  o:["Integridade","Confidencialidade","Disponibilidade","Não-repúdio"], a:0,
+  e:"Integridade é a garantia de que o dado não foi alterado sem autorização. Se ele apenas tivesse lido o registro, seria confidencialidade."},
+ {q:"Qual função é a adequada para armazenar senhas de usuário?",
+  o:["Argon2id","SHA-256","AES-256-GCM","Base64"], a:0,
+  e:"Argon2id é uma função de derivação de chave com custo de memória e tempo ajustável. SHA-256 é rápido demais, AES é cifra reversível e Base64 é só codificação."},
+ {q:"O que realmente elimina injeção SQL?",
+  o:["Consulta parametrizada","Escapar aspas na entrada","Bloquear a palavra SELECT no WAF","Usar POST em vez de GET"], a:0,
+  e:"Parametrizar separa código de dado no nível do driver — a entrada nunca é interpretada como instrução. Filtros e WAF têm desvios conhecidos."},
+ {q:"Qual cabeçalho é a mitigação moderna de clickjacking?",
+  o:["Content-Security-Policy: frame-ancestors","X-XSS-Protection","Access-Control-Allow-Origin","Strict-Transport-Security"], a:0,
+  e:"frame-ancestors define quem pode enquadrar a página e substitui o antigo X-Frame-Options. HSTS força HTTPS; CORS controla leitura entre origens."},
+ {q:"No NIST SP 800-61, qual fase vem logo depois de \"Detecção e Análise\"?",
+  o:["Contenção, Erradicação e Recuperação","Preparação","Atividade Pós-Incidente","Classificação de Ativos"], a:0,
+  e:"As quatro fases são: Preparação; Detecção e Análise; Contenção, Erradicação e Recuperação; e Atividade Pós-Incidente. Conter antes de erradicar evita que o invasor perceba e acelere o dano."},
+ {q:"Qual é a diferença essencial da criptografia assimétrica?",
+  o:["Usa par de chaves: uma pública e uma privada","É sempre mais segura que a simétrica","Não precisa de gerador aleatório","Só funciona sobre TLS"], a:0,
+  e:"O par de chaves resolve distribuição e permite assinatura, mas é ordens de grandeza mais lento — por isso TLS usa assimétrica só para negociar a chave simétrica da sessão."},
+ {q:"No SIEM, um \"falso positivo\" é:",
+  o:["Alerta disparado sem incidente real por trás","Incidente real que não gerou alerta","Log perdido antes da coleta","Regra que nunca dispara"], a:0,
+  e:"Falso positivo é ruído: consome analista e treina o time a ignorar alerta. O oposto — incidente real sem alerta — é o falso negativo, que é o que mais machuca."},
+ {q:"Por que o modo ECB não deve ser usado em cifra de bloco?",
+  o:["Blocos iguais viram texto cifrado igual, expondo padrão","É lento demais para uso prático","Não existe em bibliotecas modernas","Só aceita chaves de 56 bits"], a:0,
+  e:"ECB cifra cada bloco de forma independente e determinística. Cifrando uma imagem em ECB o desenho continua visível. Modos autenticados como GCM resolvem confidencialidade e integridade juntos."},
+ {q:"Na edição OWASP Top 10 : 2025, onde foi parar o SSRF?",
+  o:["Absorvido por Controle de Acesso Quebrado (A01)","Continua como categoria própria","Virou categoria nova A10","Foi removido da lista"], a:0,
+  e:"Em 2025 o SSRF deixou de ser categoria isolada e foi incorporado a A01 — Controle de Acesso Quebrado. As duas novas categorias da edição são Falhas na Cadeia de Suprimentos (A03) e Tratamento Incorreto de Condições Excepcionais (A10)."},
+ {q:"Em AES-GCM, qual erro passa de \"enfraquecer\" para \"quebrar\"?",
+  o:["Reusar o mesmo nonce com a mesma chave","Usar chave de 128 em vez de 256 bits","Escolher um IV aleatório","Ativar o sigilo futuro"], a:0,
+  e:"Reusar (chave, nonce) em GCM permite recuperar texto claro e forjar mensagens. AES-128 é perfeitamente seguro; IV aleatório é o correto."},
+ {q:"Onde NÃO se deve guardar um JWT de sessão no navegador?",
+  o:["Em localStorage","Em cookie HttpOnly + Secure","No servidor, com id opaco no cookie","Em memória durante a sessão"], a:0,
+  e:"localStorage é lido por qualquer XSS, que leva o token embora. Cookie HttpOnly ao menos exige que o ataque rode dentro da página; sessão no servidor com id opaco é ainda mais simples de revogar."},
+ {q:"Qual métrica de fato mede a eficácia de um time de defesa?",
+  o:["Tempo médio até detectar e responder (MTTD/MTTR)","Número total de alertas gerados","Quantidade de regras no SIEM","Total de CVEs no relatório"], a:0,
+  e:"MTTD e MTTR medem a janela entre invasão e reação, que é o que determina o dano. Contagem de alertas e de regras são métricas de vaidade: sobem sem que a segurança melhore."}
+];
+
+/* ================== GLOSSÁRIO ================== */
+const GLOSS = [
+ ["Vetor de ataque","Caminho concreto pelo qual o invasor chega ao ativo — um formulário, uma porta, um funcionário."],
+ ["CVE","Identificador público e único de uma vulnerabilidade específica em um produto específico."],
+ ["CVSS","Nota de 0 a 10 que estima a severidade técnica. Severidade não é risco: falta o contexto do ambiente."],
+ ["CWE","Classificação do tipo de defeito (ex.: CWE-89, injeção SQL). O CVE é o caso; o CWE é a categoria."],
+ ["KEV","Catálogo da CISA de vulnerabilidades com exploração confirmada no mundo real. O melhor sinal gratuito de prioridade."],
+ ["Zero-day","Falha explorada antes de existir correção pública do fornecedor."],
+ ["Payload","Parte da carga que produz o efeito pretendido depois que a falha é acionada."],
+ ["Pivoteamento","Usar uma máquina já comprometida como ponte para alcançar uma rede interna."],
+ ["Escalada de privilégio","Sair de um acesso limitado para acesso administrativo no mesmo host."],
+ ["Movimentação lateral","Usar credencial e confiança de um host comprometido para alcançar outros."],
+ ["Hardening","Reduzir a superfície de ataque removendo serviço, permissão e configuração padrão desnecessária."],
+ ["Defesa em profundidade","Empilhar controles independentes para que a falha de um não vire comprometimento."],
+ ["Menor privilégio","Cada identidade recebe exatamente a permissão que precisa, pelo tempo que precisa."],
+ ["Confiança zero","Nenhuma rede é confiável por posição: toda requisição é autenticada e autorizada."],
+ ["MFA","Autenticação com mais de um fator. Chave FIDO2/passkey resiste a phishing; SMS não."],
+ ["Phishing","Engenharia social que induz a entrega de credencial ou execução de arquivo."],
+ ["Ransomware","Extorsão por cifragem de dado, hoje quase sempre combinada com vazamento (dupla extorsão)."],
+ ["C2","Canal de comando e controle pelo qual o invasor opera o host comprometido."],
+ ["IOC","Indicador de comprometimento: hash, domínio, IP ou artefato que sugere invasão."],
+ ["TTP","Táticas, técnicas e procedimentos — o comportamento do adversário, mais estável que um IOC."],
+ ["MITRE ATT&CK","Base de conhecimento que cataloga TTPs reais e vira linguagem comum entre times."],
+ ["SIEM","Plataforma que centraliza, correlaciona e alerta sobre logs de toda a organização."],
+ ["SOAR","Orquestração e automação de resposta: transforma o passo manual repetido em fluxo automático."],
+ ["EDR","Agente no endpoint que registra comportamento, detecta e permite resposta remota."],
+ ["MTTD / MTTR","Tempo médio até detectar e até responder. As duas métricas que o time azul otimiza."],
+ ["Falso negativo","Incidente real que não gerou alerta. Mais caro que o falso positivo."],
+ ["Superfície de ataque","Soma de todos os pontos por onde alguém não autorizado poderia interagir com o sistema."],
+ ["Sigilo futuro (PFS)","Vazar a chave de longo prazo não abre as sessões antigas já gravadas."],
+ ["Salt","Valor aleatório único por senha que impede tabela pré-computada (rainbow table)."],
+ ["Pepper","Segredo global guardado fora do banco, some proteção extra se só o banco vazar."],
+ ["Nonce","Número usado uma única vez. Reusar nonce em AES-GCM quebra a confidencialidade."],
+ ["SBOM","Inventário das dependências de um software — pré-requisito para responder a \"estamos vulneráveis?\"."],
+ ["IDOR","Referência direta insegura a objeto: trocar um id e acessar o recurso de outra pessoa."],
+ ["BOLA / BFLA","Autorização quebrada em nível de objeto / de função — o IDOR do mundo das APIs."],
+ ["SSRF","O servidor busca uma URL escolhida pelo atacante, alcançando recurso interno ou metadados da nuvem."],
+ ["CTF","Capture the Flag: competição e formato de treino em que se resolve desafio para obter uma \"flag\"."],
+ ["Red / Blue / Purple team","Ofensiva / defensiva / as duas colaborando para melhorar detecção."],
+ ["Sigma","Formato aberto de regra de detecção, convertido para a linguagem de cada SIEM."]
+];
+
+/* ================== CONQUISTAS ================== */
+const BADGES = [
+ {id:"start", n:"Primeiro passo", d:"1 aula concluída", svg:"circ"},
+ {id:"t1",    n:"Base sólida",    d:"Trilha 01 completa", svg:"shield"},
+ {id:"crypto",n:"Chaveiro",       d:"Trilha 03 completa", svg:"key"},
+ {id:"web",   n:"Caçador web",    d:"Trilha 04 completa", svg:"globe"},
+ {id:"half",  n:"Meio caminho",   d:"50% das aulas",      svg:"half"},
+ {id:"quiz",  n:"Aprovado",       d:"9+ acertos no quiz", svg:"check"},
+ {id:"ace",   n:"Gabarito",       d:"12/12 no quiz",      svg:"bolt"},
+ {id:"all",   n:"Perímetro",      d:"100% das trilhas",   svg:"star"}
+];
+
+/* ================== LINHA DO TEMPO ================== */
+const TIMELINE = [
+ ["Mês 1–2","Fundamentos e Linux","Vocabulário, modelagem de ameaça e linha de comando. Meta concreta: navegar um sistema Linux sem procurar cada comando no buscador."],
+ ["Mês 3–4","Redes de verdade","Captura de pacote, TLS, DNS e firewall. Meta: explicar, olhando um pcap, o que aconteceu naquela conexão."],
+ ["Mês 5–7","Aplicação web","A trilha com maior retorno por hora. Meta: fechar os laboratórios Apprentice e metade dos Practitioner da PortSwigger."],
+ ["Mês 8–10","Escolha o lado","Ofensiva ou defesa. Meta ofensiva: três máquinas Easy do HTB com relatório. Meta defensiva: um SIEM próprio com regra Sigma autoral."],
+ ["Mês 11–12","Prova e portfólio","Certificação de entrada alinhada ao lado escolhido, três relatórios públicos e um projeto no GitHub. Meta: passar em triagem técnica."]
+];
+
+/* ================== RECURSOS EXTERNOS ================== */
+const RECURSOS = [
+ ["Praticar — laboratórios", [
+  ["TryHackMe","https://tryhackme.com/","Trilhas guiadas do básico ao red/blue team. Camada gratuita robusta.",1],
+  ["Hack The Box","https://www.hackthebox.com/","Máquinas e desafios; a Academy tem módulos gratuitos.",1],
+  ["PortSwigger Web Security Academy","https://portswigger.net/web-security","Referência mundial em segurança web. Totalmente gratuito.",1],
+  ["pwn.college","https://pwn.college/","Curso estilo CTF da Universidade do Arizona, do zero.",1],
+  ["OverTheWire","https://overthewire.org/wargames/","Wargames clássicos; comece pelo Bandit para Linux e shell.",1],
+  ["OWASP Juice Shop","https://owasp.org/www-project-juice-shop/","App deliberadamente vulnerável para treinar web. Roda local.",1],
+  ["CyberDefenders","https://cyberdefenders.org/","Laboratórios de forense e resposta a incidente (blue team).",1],
+  ["Cryptopals","https://cryptopals.com/","Criptografia aprendida quebrando implementações erradas.",1]
+ ]],
+ ["Fonte primária — normas e docs", [
+  ["OWASP Top 10:2025","https://owasp.org/Top10/","A lista de referência de risco em aplicação web.",1],
+  ["OWASP Cheat Sheet Series","https://cheatsheetseries.owasp.org/","Guia prático por tema. Consulta obrigatória.",1],
+  ["MITRE ATT&CK","https://attack.mitre.org/","Catálogo de táticas e técnicas reais de adversário.",1],
+  ["NIST SP 800-61r2","https://csrc.nist.gov/pubs/sp/800/61/r2/final","O guia de resposta a incidente.",1],
+  ["NIST SP 800-63B","https://pages.nist.gov/800-63-3/sp800-63b.html","A norma moderna de autenticação e senha.",1],
+  ["CISA KEV Catalog","https://www.cisa.gov/known-exploited-vulnerabilities-catalog","Vulnerabilidades com exploração confirmada.",1],
+  ["CIS Benchmarks","https://www.cisecurity.org/cis-benchmarks","Referências de hardening por sistema.",1]
+ ]],
+ ["Cursos e certificação de entrada", [
+  ["Cisco Networking Academy","https://www.netacad.com/","Curso de redes e de introdução à cibersegurança, gratuito.",1],
+  ["Fortinet Training (NSE)","https://www.fortinet.com/training/cybersecurity-professionals","Trilha gratuita, do fundamento ao técnico.",1],
+  ["IBM SkillsBuild","https://skillsbuild.org/","Cursos gratuitos com credencial digital.",1],
+  ["Google Cybersecurity (Coursera)","https://www.coursera.org/professional-certificates/google-cybersecurity","Certificado profissional; audível de graça.",1],
+  ["AttackIQ Academy","https://www.academy.attackiq.com/","Cursos gratuitos focados em ATT&CK e simulação.",1],
+  ["CS50 (Harvard)","https://cs50.harvard.edu/","Base de ciência da computação. Gratuito e excelente.",1]
+ ]],
+ ["Leitura e comunidade", [
+  ["HackTricks","https://book.hacktricks.wiki/","Compêndio prático de técnicas ofensivas por serviço.",1],
+  ["PayloadsAllTheThings","https://github.com/swisskyrepo/PayloadsAllTheThings","Coletânea de payloads e truques por categoria.",1],
+  ["GTFOBins","https://gtfobins.github.io/","Binários Unix úteis para escalada de privilégio.",1],
+  ["LOLBAS","https://lolbas-project.github.io/","O equivalente para binários nativos do Windows.",1],
+  ["The DFIR Report","https://thedfirreport.com/","Análises detalhadas de intrusões reais.",1],
+  ["Krebs on Security","https://krebsonsecurity.com/","Jornalismo investigativo de segurança.",1],
+  ["r/netsec","https://www.reddit.com/r/netsec/","Notícia técnica e discussão da comunidade.",1]
+ ]]
+];
+
+/* ================== COMANDOS (cheatsheet) ================== */
+const SHEET = [
+ ["Recon", [
+  ["nmap -sn 10.0.0.0/24","descobre hosts vivos sem varrer porta"],
+  ["nmap -p- --min-rate 2000 ALVO","todas as 65535 portas, rápido"],
+  ["nmap -sV -sC -p PORTAS ALVO","versão + scripts nas portas abertas"],
+  ["ffuf -u http://ALVO/FUZZ -w lista.txt -mc 200,301,403","descoberta de conteúdo/diretório"],
+  ["curl -s 'https://crt.sh/?q=%25.ALVO&output=json' | jq -r '.[].name_value' | sort -u","subdomínios via CT logs"],
+  ["whatweb http://ALVO","fingerprint de tecnologia web"]
+ ]],
+ ["Rede", [
+  ["ip a ; ip route","endereço e rota desta máquina"],
+  ["ss -tulpn","o que está escutando e por quem"],
+  ["dig +trace exemplo.com","cadeia completa de resolução DNS"],
+  ["sudo tcpdump -ni any 'port 53' -c 20","captura rápida de DNS"],
+  ["openssl s_client -connect host:443 -servername host </dev/null 2>/dev/null | openssl x509 -noout -dates","validade do certificado TLS"],
+  ["nmap --script ssl-enum-ciphers -p 443 ALVO","cifras e versões de TLS aceitas"]
+ ]],
+ ["Web / HTTP", [
+  ["curl -sSIL https://ALVO","segue redirecionamento, mostra só cabeçalhos"],
+  ["curl -sSI https://ALVO | grep -iE 'content-security|strict-transport|x-content-type'","checa cabeçalhos de segurança"],
+  ["curl -s -X POST -d 'a=1' https://ALVO/api","requisição POST simples"],
+  ["gobuster dir -u http://ALVO -w lista.txt","enumeração de diretórios"],
+  ["sqlmap -u 'http://ALVO/p?id=1' --batch","teste de injeção SQL (só autorizado)"]
+ ]],
+ ["Cripto / senha", [
+  ["openssl rand -base64 32","32 bytes aleatórios seguros"],
+  ["python3 -c \"import secrets; print(secrets.token_urlsafe(32))\"","token seguro para sessão/convite"],
+  ["sha256sum -c SHA256SUMS --ignore-missing","verifica integridade de download"],
+  ["ssh-keygen -t ed25519 -C 'trabalho'","par de chaves moderno para SSH"],
+  ["hashid '$2y$...'","identifica o tipo de um hash"]
+ ]],
+ ["Priv-esc (Linux)", [
+  ["sudo -l","o que posso rodar como root"],
+  ["find / -perm -4000 2>/dev/null","lista binários SUID"],
+  ["cat /etc/crontab ; ls -la /etc/cron.*","tarefas agendadas"],
+  ["getcap -r / 2>/dev/null","capacidades de kernel atribuídas"],
+  ["uname -a ; cat /etc/os-release","versão de kernel e distribuição"]
+ ]],
+ ["Defesa / triagem", [
+  ["ss -tanp | awk 'NR>1{print $1}' | sort | uniq -c","conta conexões por estado"],
+  ["last -f /var/log/wtmp | head","últimos logins na máquina"],
+  ["journalctl -u ssh --since '1 hour ago'","eventos recentes do SSH"],
+  ["grep 'Failed password' /var/log/auth.log | tail","tentativas de login falhas"],
+  ["sha256sum arquivo && ls -la arquivo","hash e metadados para custódia"]
+ ]]
+];
+</script>
+<script>
+/* ============================ estado ============================ */
+const KEY = "perimetro.v2";
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } };
+const persist = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} };
+let S = load(); S.done = S.done || {}; S.quiz = S.quiz || {};
+const TOTAL = TRILHAS.reduce((a,t) => a + t.t.length, 0);
+const $ = q => document.querySelector(q);
+const $$ = q => Array.from(document.querySelectorAll(q));
+const el = (t,c,h) => { const n = document.createElement(t); if(c) n.className = c; if(h!=null) n.innerHTML = h; return n; };
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* ============================ tema ============================ */
+const themeBtn = $("#themeBtn");
+const applyTheme = t => { if(t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); };
+try { const st = localStorage.getItem("perimetro.theme"); if(st) applyTheme(st); } catch(e){}
+themeBtn.addEventListener("click", () => {
+  const rgb = getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(Number);
+  const dark = (rgb[0]+rgb[1]+rgb[2]) < 330;
+  const next = dark ? "light" : "dark";
+  applyTheme(next);
+  try { localStorage.setItem("perimetro.theme", next); } catch(e){}
+  if(window.__globeRecolor) window.__globeRecolor();
+});
+
+/* ============================ exportar progresso ============================ */
+$("#exportBtn").addEventListener("click", async () => {
+  const feito = Object.keys(S.done).length, ac = Object.values(S.quiz).filter(v=>v===1).length;
+  const payload = { app:"escola-perimetro", exportado_em:new Date().toISOString(),
+    aulas_concluidas:feito, total_aulas:TOTAL, percentual:Math.round(feito/TOTAL*100),
+    quiz_acertos:ac, quiz_respondidas:Object.keys(S.quiz).length, detalhe:S };
+  const json = JSON.stringify(payload,null,2);
+  const btn = $("#exportBtn"), orig = btn.textContent;
+  const flash = t => { btn.textContent = t; setTimeout(()=>btn.textContent=orig, 1500); };
+
+  // 1) artifact hospedado: usa a capability de download da claude.ai
+  if(window.claude && typeof window.claude.use === "function"){
+    try {
+      const dl = await window.claude.use("downloads");
+      if(dl){ await dl.save({ filename:"perimetro-progresso.json", data:json }); flash("salvo ✓"); return; }
+    } catch(e){ if(e && e.code === "declined") return; }
+  }
+  // 2) arquivo local (index.html aberto direto): download por link
+  try {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([json],{type:"application/json"}));
+    a.download = "perimetro-progresso.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+    flash("baixado ✓"); return;
+  } catch(e){}
+  // 3) último recurso: copia ao clipboard
+  if(navigator.clipboard){ navigator.clipboard.writeText(json).then(()=>flash("copiado ✓")).catch(()=>{}); }
+});
+
+/* ============================ trilhas ============================ */
+const box = $("#trilhasBox");
+TRILHAS.forEach((m, i) => {
+  const card = el("article", "mod tilt"); card.setAttribute("open-state","0");
+  const idx = String(i+1).padStart(2,"0");
+  const head = el("button"); head.type = "button"; head.setAttribute("aria-expanded","false");
+  head.innerHTML =
+    '<span class="midx">'+idx+'</span>'+
+    '<span><span class="mname">'+m.n+'</span><span class="mmeta">'+m.t.length+' aulas · '+m.h+' h · objetivo: '+esc(m.goal.split(".")[0])+'</span></span>'+
+    '<span class="lvl '+m.lvl+'">'+m.lvlTxt+'</span>'+
+    '<span class="mbar"><i><s data-bar="'+i+'"></s></i><em data-num="'+i+'" style="font-style:normal">0/'+m.t.length+'</em></span>'+
+    '<span class="chev">▸</span>';
+  const body = el("div","mbody");
+  const left = el("div");
+  left.appendChild(el("p","mgoal prose", m.goal));
+  const ul = el("ul","topics");
+  m.t.forEach((topic, j) => {
+    const id = i+"-"+j;
+    const li = el("li","topic"); li.dataset.search = (topic.t+" "+topic.d).toLowerCase();
+    if(S.done[id]) li.classList.add("done");
+    let inner =
+      '<div class="trow">'+
+        '<span class="tnum">'+String(j+1).padStart(2,"0")+'</span>'+
+        '<input class="tchk" type="checkbox" id="c'+id+'"'+(S.done[id]?" checked":"")+' aria-label="marcar aula concluída">'+
+        '<button class="ttitle" type="button">'+topic.t+'</button>'+
+        '<span class="texp">▸</span>'+
+      '</div>'+
+      '<div class="tbody">'+topic.d;
+    if(topic.c) inner += '<pre class="code">'+topic.c+'</pre>';
+    if(topic.w) inner += '<div class="gotcha"><b>erro comum</b>'+topic.w+'</div>';
+    inner += '</div>';
+    li.innerHTML = inner;
+    const chk = li.querySelector(".tchk");
+    chk.addEventListener("change", e => {
+      if(e.target.checked){ S.done[id]=1; li.classList.add("done"); } else { delete S.done[id]; li.classList.remove("done"); }
+      persist(S); refresh();
+    });
+    const openTopic = () => li.classList.toggle("open");
+    li.querySelector(".ttitle").addEventListener("click", openTopic);
+    li.querySelector(".texp").addEventListener("click", openTopic);
+    ul.appendChild(li);
+  });
+  left.appendChild(ul);
+  const aside = el("aside","aside");
+  aside.innerHTML =
+    '<div><h4>▚ laboratório sugerido</h4><p>'+m.lab+'</p></div>'+
+    '<div><h4>▚ links diretos</h4><div class="lk">'+m.links.map(([t,u])=>'<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>').join("")+'</div></div>'+
+    '<div><h4>▚ ferramentas</h4><div class="tags">'+m.tags.map(t=>"<span>"+t+"</span>").join("")+'</div></div>';
+  body.append(left, aside);
+  head.addEventListener("click", () => {
+    const open = card.getAttribute("open-state")==="1";
+    card.setAttribute("open-state", open?"0":"1");
+    head.setAttribute("aria-expanded", String(!open));
+  });
+  card.append(head, body);
+  box.appendChild(card);
+});
+
+/* abrir tudo + busca de aula */
+let allOpen = false;
+$("#expandAll").addEventListener("click", () => {
+  allOpen = !allOpen;
+  $$(".mod").forEach(c => { c.setAttribute("open-state", allOpen?"1":"0"); c.querySelector("button").setAttribute("aria-expanded", String(allOpen)); });
+  $("#expandAll").textContent = allOpen ? "fechar tudo" : "abrir tudo";
+});
+$("#topicSearch").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  if(q){ allOpen = true; $$(".mod").forEach(c => { c.setAttribute("open-state","1"); }); }
+  $$(".topic").forEach(li => {
+    const hit = !q || li.dataset.search.includes(q);
+    li.style.display = hit ? "" : "none";
+    if(q && hit) li.classList.add("open"); else if(q) li.classList.remove("open");
+  });
+});
+
+/* inclinação 3D suave */
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches && matchMedia("(pointer: fine)").matches){
+  $$(".tilt").forEach(c => {
+    c.addEventListener("pointermove", e => {
+      if(c.getAttribute("open-state")==="1") { c.style.transform=""; return; }
+      const r = c.getBoundingClientRect();
+      const x = (e.clientX-r.left)/r.width-.5, y = (e.clientY-r.top)/r.height-.5;
+      c.style.transform = "perspective(900px) rotateX("+(-y*1.6).toFixed(2)+"deg) rotateY("+(x*2).toFixed(2)+"deg)";
+    });
+    c.addEventListener("pointerleave", () => c.style.transform="");
+  });
+}
+
+/* ============================ progresso ============================ */
+const ring = $("#ring"), CIRC = 2*Math.PI*13;
+function refresh(){
+  const n = Object.keys(S.done).length, pct = Math.round(n/TOTAL*100);
+  ring.style.strokeDashoffset = String(CIRC*(1-n/TOTAL));
+  $("#pctTop").textContent = pct+"%";
+  $("#trilhaHint").textContent = n+" / "+TOTAL+" aulas";
+  TRILHAS.forEach((m,i) => {
+    const c = m.t.filter((_,j)=>S.done[i+"-"+j]).length;
+    const bar = document.querySelector('[data-bar="'+i+'"]'); if(bar) bar.style.width = (c/m.t.length*100)+"%";
+    const num = document.querySelector('[data-num="'+i+'"]'); if(num) num.textContent = c+"/"+m.t.length;
+  });
+  refreshBadges();
+}
+
+/* ============================ comandos (cheatsheet) ============================ */
+const tabs = $("#sheetTabs"), sbody = $("#sheetBody");
+function showSheet(k){
+  $$("#sheetTabs button").forEach((b,i)=>b.setAttribute("aria-selected", String(i===k)));
+  sbody.innerHTML = "";
+  SHEET[k][1].forEach(([cmd,desc]) => {
+    const row = el("div","cmd");
+    row.innerHTML = '<div><code>'+esc(cmd)+'</code><small>'+desc+'</small></div><button class="copy" type="button">copiar</button>';
+    row.querySelector(".copy").addEventListener("click", ev => {
+      navigator.clipboard && navigator.clipboard.writeText(cmd);
+      ev.target.textContent = "copiado ✓";
+      setTimeout(()=>ev.target.textContent="copiar", 1200);
+    });
+    sbody.appendChild(row);
+  });
+}
+SHEET.forEach(([nome], k) => {
+  const b = el("button", null, nome); b.type="button"; b.setAttribute("role","tab");
+  b.addEventListener("click", ()=>showSheet(k)); tabs.appendChild(b);
+});
+showSheet(0);
+
+/* ============================ laboratório de entropia ============================ */
+const COMUNS = ["senha","password","123456","qwerty","admin","brasil","futebol","teamo","master","abc123","iloveyou","dragon","letmein","102030","gabriel"];
+function analisa(p){
+  if(!p) return null;
+  let pool = 0;
+  if(/[a-z]/.test(p)) pool+=26; if(/[A-Z]/.test(p)) pool+=26;
+  if(/[0-9]/.test(p)) pool+=10; if(/[^A-Za-z0-9]/.test(p)) pool+=33;
+  let bits = p.length*Math.log2(pool||1); const notas=[]; const low=p.toLowerCase();
+  if(COMUNS.some(w=>low.includes(w))){ bits*=.35; notas.push("contém palavra de dicionário"); }
+  if(/(.)\1{2,}/.test(p)){ bits*=.8; notas.push("caractere repetido em sequência"); }
+  if(/(012|123|234|345|456|567|678|789|abc|qwe|asd)/i.test(p)){ bits*=.7; notas.push("sequência previsível"); }
+  if(/^[A-Z][a-z]+[0-9]{1,4}[!@#$]?$/.test(p)){ bits*=.6; notas.push("padrão Maiúscula+palavra+número"); }
+  return { bits:Math.max(bits,0), pool, notas };
+}
+function tempo(bits){
+  const seg = Math.pow(2, bits-1)/1e11;
+  if(seg < 1) return "instantâneo";
+  const escalas = [[1,"s"],[60,"min"],[3600,"h"],[86400,"dias"],[31557600,"anos"]];
+  let v=seg, l="s";
+  for(const [f,lab] of escalas){ if(seg/f>=1){ v=seg/f; l=lab; } }
+  if(l==="anos" && v>=1e6){ const e=v.toExponential(1).split("e+"); return e[0]+"×10^"+e[1]+" anos"; }
+  return (v<10?v.toFixed(1):Math.round(v).toLocaleString("pt-BR"))+" "+l;
+}
+const pw = $("#pw");
+function avalia(){
+  const r = analisa(pw.value), meter = $("#pwMeter");
+  if(!r){ meter.style.width="0"; $("#rBits").textContent="0"; $("#rPool").textContent="0"; $("#rTime").textContent="—"; $("#pwVerdict").textContent="Aguardando entrada."; return; }
+  const b = r.bits;
+  meter.style.width = Math.min(100, b/90*100)+"%";
+  meter.style.background = b<40?"var(--crit)":b<60?"var(--warn)":b<80?"var(--accent)":"var(--ok)";
+  $("#rBits").textContent = b.toFixed(1); $("#rPool").textContent = r.pool; $("#rTime").textContent = tempo(b);
+  const nivel = b<40?"Frágil — cai em ataque de dicionário ou força bruta curta."
+    : b<60?"Fraca para conta importante. Só aceitável com MFA na frente."
+    : b<80?"Razoável. Serve para uso comum, não para conta administrativa."
+    : "Forte. Acima de 80 bits, força bruta offline deixa de ser o caminho mais barato.";
+  $("#pwVerdict").innerHTML = nivel + (r.notas.length ? '<br><span style="color:var(--crit)">Penalizações: '+r.notas.join("; ")+".</span>" : "");
+}
+pw.addEventListener("input", avalia);
+$("#genPw").addEventListener("click", () => {
+  const w = ["ancora","bigorna","cavalo","dominio","escova","farol","goiaba","hidrante","iglu","janela","kernel","luneta","martelo","nuvem","orquidea","pedra","quartzo","raposa"];
+  const a = new Uint32Array(5); crypto.getRandomValues(a);
+  pw.value = [0,1,2,3].map(i=>w[a[i]%w.length]).join("-")+"-"+(a[4]%100);
+  avalia();
+});
+
+/* ============================ OWASP ============================ */
+const ob = $("#owaspBox");
+OWASP.forEach(r => {
+  const b = el("button","flip"); b.type="button"; b.setAttribute("aria-pressed","false");
+  b.innerHTML =
+    '<span class="inner">'+
+      '<span class="face"><span class="rid">'+r.id+'</span><span class="rname">'+r.n+'</span>'+
+        '<span class="rsub">'+r.s+'</span><span class="delta">'+r.delta+'</span><span class="hintflip">ver vetor e mitigação ▸</span></span>'+
+      '<span class="back face"><span class="rid">'+r.id+'</span>'+
+        '<p><b>Vetor:</b> '+r.v+'</p><p class="fix"><b>Corte:</b> '+r.f+'</p></span>'+
+    '</span>';
+  b.addEventListener("click", () => b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true"));
+  ob.appendChild(b);
+});
+
+/* ============================ quiz ============================ */
+const qb = $("#quizBox");
+function renderQuiz(){
+  qb.innerHTML = "";
+  QUIZ.forEach((q,i) => {
+    const c = el("article","q");
+    c.innerHTML = "<p><b>Q"+String(i+1).padStart(2,"0")+"</b>"+q.q+"</p>";
+    const opts = el("div","opts");
+    q.o.forEach((txt,j) => {
+      const o = el("button","opt","<kbd>"+"ABCD"[j]+"</kbd><span>"+txt+"</span>"); o.type="button";
+      o.addEventListener("click", () => {
+        if(c.classList.contains("done")) return;
+        c.classList.add("done");
+        o.classList.add(j===q.a?"right":"wrong");
+        if(j!==q.a) opts.children[q.a].classList.add("right");
+        S.quiz[i] = j===q.a?1:0; persist(S); pontua();
+      });
+      opts.appendChild(o);
+    });
+    c.append(opts, el("p","expl", q.e));
+    if(S.quiz[i]!==undefined){ c.classList.add("done"); opts.children[q.a].classList.add("right"); }
+    qb.appendChild(c);
+  });
+  pontua();
+}
+function pontua(){
+  const ks = Object.keys(S.quiz), ac = ks.filter(k=>S.quiz[k]===1).length;
+  $("#scoreN").textContent = ac;
+  $("#scoreMsg").textContent = ks.length===0 ? "Responda para ver o desempenho."
+    : ks.length<QUIZ.length ? (ks.length+" de "+QUIZ.length+" respondidas.")
+    : ac>=10 ? "Domínio consistente. Avance para as trilhas avançadas."
+    : ac>=7 ? "Base boa, com lacunas. Releia a explicação das erradas."
+    : "Revise Fundamentos e Criptografia antes de seguir.";
+  refreshBadges();
+}
+$("#resetQuiz").addEventListener("click", () => { S.quiz={}; persist(S); renderQuiz(); });
+renderQuiz();
+
+/* ============================ conquistas ============================ */
+const ICONS = {
+ circ:'<circle cx="23" cy="23" r="13" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="23" cy="23" r="4.5" fill="currentColor"/>',
+ shield:'<path d="M23 5 39 11v12c0 10-7 16-16 18C14 39 7 33 7 23V11z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+ key:'<circle cx="16" cy="23" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M23 23h16m-5 0v6m-5-6v4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+ globe:'<circle cx="23" cy="23" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><ellipse cx="23" cy="23" rx="6" ry="15" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 23h29M11 15h24M11 31h24" stroke="currentColor" stroke-width="1.8"/>',
+ half:'<circle cx="23" cy="23" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M23 8a15 15 0 0 1 0 30z" fill="currentColor"/>',
+ check:'<circle cx="23" cy="23" r="15" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15 23.5 21 30 32 17" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
+ bolt:'<path d="M25 5 12 26h9l-3 15 14-22h-9z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>',
+ star:'<path d="m23 5 5 12.6L41 18.5l-10 8.4L34 40 23 32.6 12 40l3-13.1-10-8.4 13-.9z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>'
+};
+const bb = $("#badgesBox");
+BADGES.forEach(b => {
+  const n = el("div","badge"); n.dataset.id = b.id;
+  n.innerHTML = '<svg viewBox="0 0 46 46" aria-hidden="true">'+ICONS[b.svg]+"</svg><b>"+b.n+"</b><span>"+b.d+"</span>";
+  bb.appendChild(n);
+});
+function refreshBadges(){
+  const n = Object.keys(S.done).length;
+  const compl = i => TRILHAS[i].t.every((_,j)=>S.done[i+"-"+j]);
+  const ac = Object.keys(S.quiz).filter(k=>S.quiz[k]===1).length;
+  const got = { start:n>=1, t1:compl(0), crypto:compl(2), web:compl(3), half:n>=TOTAL/2, quiz:ac>=9, ace:ac===12, all:n===TOTAL };
+  let c = 0;
+  bb.querySelectorAll(".badge").forEach(x => { const on=!!got[x.dataset.id]; if(on)c++; x.classList.toggle("got",on); });
+  $("#badgeHint").textContent = c+" de "+BADGES.length+" desbloqueadas";
+}
+
+/* ============================ linha do tempo ============================ */
+const tb = $("#tlBox");
+TIMELINE.forEach(([t,h,p]) => { const n=el("article","tl rv"); n.innerHTML="<time>"+t+"</time><h4>"+h+"</h4><p>"+p+"</p>"; tb.appendChild(n); });
+
+/* ============================ recursos ============================ */
+const rbx = $("#resBox");
+RECURSOS.forEach(([grp, items]) => {
+  const g = el("div","resgrp rv"); g.innerHTML = "<h4>"+grp+"</h4>";
+  const ul = el("ul");
+  items.forEach(([nome,url,desc,free]) => {
+    const li = el("li");
+    li.innerHTML = '<a href="'+url+'" target="_blank" rel="noopener">'+nome+(free?'<span class="free">grátis</span>':'')+'<small>'+desc+'</small></a>';
+    ul.appendChild(li);
+  });
+  g.appendChild(ul); rbx.appendChild(g);
+});
+
+/* ============================ glossário ============================ */
+const gbx = $("#glossBox");
+function renderGloss(f){
+  gbx.innerHTML = ""; const q = (f||"").trim().toLowerCase();
+  const hits = GLOSS.filter(([t,d]) => !q || (t+" "+d).toLowerCase().includes(q));
+  if(!hits.length){ gbx.appendChild(el("div","empty","Nenhum termo corresponde a “"+esc(f)+"”.")); return; }
+  hits.forEach(([t,d]) => gbx.appendChild(el("dl",null,"<dt>"+t+"</dt><dd>"+d+"</dd>")));
+}
+$("#glossSearch").addEventListener("input", e => renderGloss(e.target.value));
+renderGloss("");
+
+refresh();
+</script>
+<script>
+/* ============================ animações de página ============================ */
+const REDUZ = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const sb = document.getElementById("scrollbar");
+addEventListener("scroll", () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  sb.style.width = (h>0 ? scrollY/h*100 : 0)+"%";
+}, { passive:true });
+
+$$(".mod, .badge, .flip, .panel, .cmd").forEach(n => n.classList.add("rv"));
+const io = new IntersectionObserver((es,o) => {
+  es.forEach((e,i) => { if(!e.isIntersecting) return;
+    setTimeout(()=>e.target.classList.add("on"), REDUZ?0:Math.min(i*50,300)); o.unobserve(e.target); });
+}, { rootMargin:"0px 0px -8% 0px", threshold:.06 });
+$$(".rv").forEach(n => io.observe(n));
+
+$$(".count").forEach(n => {
+  const to = +n.dataset.to, dur = 1300, t0 = performance.now();
+  if(REDUZ){ n.textContent = to; return; }
+  const step = t => { const k = Math.min(1,(t-t0)/dur); n.textContent = Math.round(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+});
+
+/* título embaralhado */
+(() => {
+  const node = document.getElementById("scramble");
+  const palavras = ["defender","detectar","responder","auditar","conter","caçar"];
+  const chars = "!<>-_\\/[]{}—=+*^?#01xØ§";
+  if(REDUZ || !node) return;
+  let idx = 0;
+  const troca = () => {
+    const de = node.textContent, para = palavras[++idx%palavras.length];
+    const len = Math.max(de.length, para.length);
+    const plan = Array.from({length:len}, (_,i) => { const s = Math.floor(Math.random()*18); return { a:de[i]||"", b:para[i]||"", s, e:s+Math.floor(Math.random()*18)+8 }; });
+    let f = 0;
+    const tick = () => {
+      let out = "", done = 0;
+      for(const p of plan){
+        if(f>=p.e){ out += p.b; done++; }
+        else if(f>=p.s) out += '<span style="opacity:.55">'+chars[Math.floor(Math.random()*chars.length)]+"</span>";
+        else out += p.a;
+      }
+      node.innerHTML = out;
+      if(done===plan.length) return setTimeout(troca, 2600);
+      f++; requestAnimationFrame(tick);
+    };
+    tick();
+  };
+  setTimeout(troca, 2400);
+})();
+
+/* terminal */
+(() => {
+  const out = document.getElementById("termOut"); if(!out) return;
+  const linhas = [
+    ['<span class="p">$</span> nmap -sV -Pn 10.10.7.0/24', 360],
+    ['  <span class="ok">aberta</span>  22/tcp   OpenSSH 9.6p1', 110],
+    ['  <span class="ok">aberta</span>  443/tcp  nginx 1.25.3 (TLS 1.3)', 110],
+    ['  <span class="wr">aberta</span>  8080/tcp Jenkins — sem autenticação', 200],
+    ['<span class="p">$</span> curl -sI https://alvo.local | grep -i security', 400],
+    ['  <span class="cr">ausente</span> Content-Security-Policy', 110],
+    ['  <span class="cr">ausente</span> Strict-Transport-Security', 200],
+    ['<span class="p">$</span> gerar_relatorio --severidade alta', 400],
+    ['  <span class="ok">3 achados registrados · escopo autorizado ✓</span>', 900]
+  ];
+  let i = 0;
+  const escreve = () => {
+    if(i>=linhas.length){ setTimeout(()=>{ out.innerHTML=""; i=0; escreve(); }, 3200); return; }
+    const [txt, pausa] = linhas[i++];
+    const d = document.createElement("div"); d.innerHTML = txt+' <span class="caret"></span>';
+    out.appendChild(d);
+    const ant = out.children[out.children.length-2]; if(ant){ const c=ant.querySelector(".caret"); if(c) c.remove(); }
+    out.scrollTop = out.scrollHeight;
+    setTimeout(escreve, REDUZ?30:pausa);
+  };
+  escreve();
+})();
+</script>
+<script>
+/* ============================ globo 3D (WebGL puro) ============================ */
+(() => {
+  const cv = document.getElementById("globe");
+  const gl = cv.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false });
+  if(!gl){ cv.style.display = "none"; return; }
+
+  /* --- shaders --- */
+  const VS = [
+    "attribute vec3 aPos; attribute float aT;",
+    "uniform mat4 uMVP; uniform mat4 uMV; uniform float uSize;",
+    "varying float vFade; varying float vT;",
+    "void main(){",
+    "  vec4 mv = uMV * vec4(aPos,1.0);",
+    "  gl_Position = uMVP * vec4(aPos,1.0);",
+    "  gl_PointSize = uSize * (2.4 / -mv.z);",
+    "  vFade = clamp((-mv.z - 2.3) / 1.9, 0.0, 1.0);",
+    "  vT = aT;",
+    "}"
+  ].join("\n");
+  const FS = [
+    "precision mediump float;",
+    "uniform vec3 uColor; uniform float uHead; uniform float uMode; uniform float uAlpha;",
+    "varying float vFade; varying float vT;",
+    "void main(){",
+    "  float a = mix(1.0, 0.09, vFade) * uAlpha;",
+    "  if(uMode < 0.5){",
+    "    vec2 d = gl_PointCoord - vec2(0.5);",
+    "    float r = length(d);",
+    "    if(r > 0.5) discard;",
+    "    a *= 1.0 - smoothstep(0.16, 0.5, r);",
+    "  } else if(uMode < 1.5){",
+    "    float dist = uHead - vT;",
+    "    if(dist < 0.0 || dist > 0.34) discard;",
+    "    a *= 1.0 - dist / 0.34;",
+    "  }",
+    "  gl_FragColor = vec4(uColor, a);",
+    "}"
+  ].join("\n");
+  const sh = (t, src) => { const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+  gl.bindAttribLocation(prog, 0, "aPos");
+  gl.bindAttribLocation(prog, 1, "aT");
+  gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){ cv.style.display = "none"; return; }
+  gl.useProgram(prog);
+  const U = n => gl.getUniformLocation(prog, n);
+  const uMVP = U("uMVP"), uMV = U("uMV"), uSize = U("uSize"),
+        uColor = U("uColor"), uHead = U("uHead"), uMode = U("uMode"), uAlpha = U("uAlpha");
+
+  /* --- matrizes --- */
+  const mul = (a, b) => {
+    const o = new Float32Array(16);
+    for(let r = 0; r < 4; r++) for(let c = 0; c < 4; c++){
+      let s = 0;
+      for(let k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k];
+      o[c * 4 + r] = s;
+    }
+    return o;
+  };
+  const persp = (fov, asp, n, f) => {
+    const t = 1 / Math.tan(fov / 2);
+    return new Float32Array([t / asp,0,0,0, 0,t,0,0, 0,0,(f + n) / (n - f),-1, 0,0,2 * f * n / (n - f),0]);
+  };
+  const trans = (x, y, z) => new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1]);
+  const rotY = a => { const c = Math.cos(a), s = Math.sin(a);
+    return new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]); };
+  const rotX = a => { const c = Math.cos(a), s = Math.sin(a);
+    return new Float32Array([1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]); };
+
+  /* --- geometria --- */
+  const N = 1100, pts = new Float32Array(N * 3);
+  const gold = Math.PI * (3 - Math.sqrt(5));
+  for(let i = 0; i < N; i++){
+    const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(Math.max(0, 1 - y * y)), th = gold * i;
+    pts[i*3] = Math.cos(th) * r; pts[i*3+1] = y; pts[i*3+2] = Math.sin(th) * r;
+  }
+  const ringsPos = [], ringSpans = [];
+  const pushStrip = (arr, span) => { span.push({ start: ringsPos.length / 3, count: arr.length / 3 }); for(const v of arr) ringsPos.push(v); };
+  for(let k = 1; k <= 5; k++){
+    const lat = -Math.PI/2 + k * Math.PI / 6, y = Math.sin(lat), r = Math.cos(lat), a = [];
+    for(let i = 0; i <= 96; i++){ const t = i / 96 * Math.PI * 2; a.push(Math.cos(t) * r, y, Math.sin(t) * r); }
+    pushStrip(a, ringSpans);
+  }
+  for(let m = 0; m < 8; m++){
+    const lon = m * Math.PI / 8, a = [];
+    for(let i = 0; i <= 72; i++){
+      const t = -Math.PI/2 + i / 72 * Math.PI;
+      a.push(Math.cos(t) * Math.cos(lon), Math.sin(t), Math.cos(t) * Math.sin(lon));
+    }
+    pushStrip(a, ringSpans);
+  }
+  const SEG = 44, NARC = 24, arcPos = [], arcT = [], arcSpans = [], arcPhase = [];
+  const randPt = () => { const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, r = Math.sqrt(1 - u * u);
+    return [Math.cos(th) * r, u, Math.sin(th) * r]; };
+  for(let a = 0; a < NARC; a++){
+    const p0 = randPt(), p1 = randPt();
+    const m = [p0[0]+p1[0], p0[1]+p1[1], p0[2]+p1[2]];
+    const len = Math.hypot(m[0], m[1], m[2]) || 1;
+    const lift = 1.18 + Math.hypot(p0[0]-p1[0], p0[1]-p1[1], p0[2]-p1[2]) * 0.16;
+    const mid = [m[0]/len*lift, m[1]/len*lift, m[2]/len*lift];
+    arcSpans.push({ start: arcPos.length / 3, count: SEG + 1 });
+    arcPhase.push(Math.random());
+    for(let i = 0; i <= SEG; i++){
+      const t = i / SEG, it = 1 - t;
+      arcPos.push(
+        it*it*p0[0] + 2*it*t*mid[0] + t*t*p1[0],
+        it*it*p0[1] + 2*it*t*mid[1] + t*t*p1[1],
+        it*it*p0[2] + 2*it*t*mid[2] + t*t*p1[2]);
+      arcT.push(t);
+    }
+  }
+  const buf = data => { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW); return b; };
+  const bPts = buf(pts), bRings = buf(new Float32Array(ringsPos)),
+        bArc = buf(new Float32Array(arcPos)), bArcT = buf(new Float32Array(arcT)),
+        bZero = buf(new Float32Array(Math.max(N, ringsPos.length / 3)));
+
+  /* --- cores do tema --- */
+  const hex = v => { v = (v || "").trim();
+    const m = v.match(/^#?([0-9a-f]{6})$/i);
+    if(!m) return [.9, .55, .25];
+    const n = parseInt(m[1], 16);
+    return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; };
+  let CA = [1,.5,.2], CL = [.5,.5,.5];
+  const recolor = () => {
+    const cs = getComputedStyle(document.documentElement);
+    CA = hex(cs.getPropertyValue("--accent"));
+    CL = hex(cs.getPropertyValue("--line-strong"));
+  };
+  recolor();
+  window.__globeRecolor = recolor;
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", recolor);
+
+  /* --- redimensionamento --- */
+  let W = 0, H = 0;
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const r = cv.getBoundingClientRect();
+    W = Math.max(1, Math.round(r.width * dpr)); H = Math.max(1, Math.round(r.height * dpr));
+    cv.width = W; cv.height = H; gl.viewport(0, 0, W, H);
+  };
+  resize();
+  addEventListener("resize", resize);
+
+  /* --- paralaxe do ponteiro --- */
+  let mx = 0, my = 0, tx = 0, ty = 0;
+  addEventListener("pointermove", e => { tx = (e.clientX / innerWidth - .5) * .5; ty = (e.clientY / innerHeight - .5) * .35; }, { passive: true });
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.clearColor(0, 0, 0, 0);
+  gl.enableVertexAttribArray(0);
+  gl.enableVertexAttribArray(1);
+
+  const bind = (pos, t) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, pos); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, t);   gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
+  };
+
+  let spin = 0, last = performance.now(), visivel = true;
+  new IntersectionObserver(e => { visivel = e[0].isIntersecting; }).observe(cv);
+
+  const frame = now => {
+    requestAnimationFrame(frame);
+    if(!visivel || W < 2) return;
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    spin += dt * (REDUZ ? 0.02 : 0.13);
+    mx += (tx - mx) * .05; my += (ty - my) * .05;
+
+    const asp = W / H;
+    const xoff = asp > 1.35 ? 0.66 : 0;
+    const view = mul(trans(xoff, 0.02, -3.35), mul(rotX(-0.32 + my), rotY(spin + mx)));
+    const mvp = mul(persp(1.02, asp, .1, 20), view);
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniformMatrix4fv(uMVP, false, mvp);
+    gl.uniformMatrix4fv(uMV, false, view);
+
+    /* meridianos e paralelos */
+    gl.uniform1f(uMode, 2); gl.uniform1f(uAlpha, .5);
+    gl.uniform3fv(uColor, CL);
+    bind(bRings, bZero);
+    for(const s of ringSpans) gl.drawArrays(gl.LINE_STRIP, s.start, s.count);
+
+    /* nós */
+    gl.uniform1f(uMode, 0); gl.uniform1f(uAlpha, .85);
+    gl.uniform1f(uSize, 2.1 * dpr);
+    gl.uniform3fv(uColor, CA);
+    bind(bPts, bZero);
+    gl.drawArrays(gl.POINTS, 0, N);
+
+    /* rotas ativas */
+    gl.uniform1f(uMode, 1); gl.uniform1f(uAlpha, 1);
+    bind(bArc, bArcT);
+    for(let i = 0; i < arcSpans.length; i++){
+      const head = ((now / 1000) * 0.34 + arcPhase[i]) % 1.5;
+      gl.uniform1f(uHead, head);
+      gl.drawArrays(gl.LINE_STRIP, arcSpans[i].start, arcSpans[i].count);
+    }
+  };
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
