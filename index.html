@@ -3,11 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Escola Perímetro — formação prática em cibersegurança em português: seis trilhas com 72 aulas escritas, comandos, laboratório de entropia, OWASP Top 10 2025 e avaliação.">
+<meta name="description" content="Escola Perímetro — formação prática em cibersegurança em português: seis trilhas com 84 aulas escritas, comandos, laboratório de entropia, OWASP Top 10 2025 e avaliação.">
 <title>Escola Perímetro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+try { const theme = localStorage.getItem('perimetro.theme'); if(theme === 'dark' || theme === 'light') document.documentElement.dataset.theme = theme; } catch (_) {}
+</script>
 </head>
 <body>
 <style>
@@ -272,14 +275,14 @@ pre.code b{color:var(--term); font-weight:500}
   overflow-x:auto; font-size:13px; color:var(--term); line-height:1.9}
 
 /* ======================= OWASP (cartões 3D) ======================= */
-.owasp{display:grid; grid-template-columns:repeat(auto-fill,minmax(305px,1fr)); gap:12px}
-.flip{background:none; border:0; padding:0; height:200px; cursor:pointer; perspective:1100px}
-.flip .inner{position:relative; width:100%; height:100%; transform-style:preserve-3d;
+.owasp{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,305px),1fr)); gap:12px}
+.flip{display:block; min-width:0; background:none; border:0; padding:0; min-height:240px; cursor:pointer; perspective:1100px; font:inherit}
+.flip .inner{display:grid; position:relative; width:100%; height:100%; transform-style:preserve-3d;
   transition:transform .62s cubic-bezier(.3,.85,.3,1)}
 .flip[aria-pressed="true"] .inner{transform:rotateY(180deg)}
-.flip .face{position:absolute; inset:0; backface-visibility:hidden; border:1px solid var(--line);
+.flip .face{position:relative; grid-area:1 / 1; min-width:0; backface-visibility:hidden; border:1px solid var(--line);
   border-radius:4px; background:var(--surface); padding:15px 16px; display:flex; flex-direction:column;
-  gap:8px; text-align:left; overflow:hidden}
+  gap:8px; text-align:left; overflow-wrap:anywhere}
 .flip:hover .face{border-color:var(--accent)}
 .flip .back{transform:rotateY(180deg); background:var(--sunken)}
 .rid{font-size:10.5px; font-weight:700; color:var(--ground); background:var(--accent); padding:3px 7px;
@@ -287,7 +290,7 @@ pre.code b{color:var(--term); font-weight:500}
 .rname{font-family:"Archivo",sans-serif; font-weight:800; font-size:17px; letter-spacing:-0.03em; color:var(--ink)}
 .rsub{margin:0; font-size:13px; color:var(--ink-soft); line-height:1.6}
 .hintflip{margin-top:auto; font-size:9.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-faint)}
-.flip .back p{margin:0; font-size:12.6px; color:var(--ink-soft); line-height:1.65; overflow:auto}
+.flip .back .risk-text{margin:0; font-size:12.6px; color:var(--ink-soft); line-height:1.65}
 .flip .back .fix{border-left:2px solid var(--term); padding-left:9px; color:var(--ink)}
 .flip .back code{font-size:11.5px; color:var(--accent)}
 .delta{font-size:10px; color:var(--ink-faint); letter-spacing:.06em}
@@ -393,12 +396,15 @@ footer{padding:46px 0 60px}
 .count{font-variant-numeric:tabular-nums}
 </style>
 
+<link rel="stylesheet" href="assets/study.css">
+<a class="skip-link" href="#trilhas">Pular para as aulas</a>
 <div id="scrollbar"></div>
 
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="#topo">perimetro<em>_</em><span>lab</span></a>
-    <nav class="navlinks" aria-label="Navegação principal">
+    <button class="iconbtn" id="menuBtn" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir navegação">☰</button>
+    <nav id="mainNav" class="navlinks" aria-label="Navegação principal">
       <a href="#trilhas">trilhas</a>
       <a href="#comandos">comandos</a>
       <a href="#lab">lab</a>
@@ -423,30 +429,34 @@ footer{padding:46px 0 60px}
 <main id="topo">
 
 <div class="hero">
-  <canvas id="globe" aria-hidden="true"></canvas>
+
   <div class="wrap">
     <p class="eyebrow">formação prática · ofensiva e defensiva · pt-br</p>
     <div class="herogrid">
       <div>
-        <h1 class="title">Aprenda a <i id="scramble">defender</i><br>o que já está exposto.</h1>
+        <h1 class="title">Aprenda a <i>defender</i><br>o que já está exposto.</h1>
         <p class="lede prose">Seis trilhas encadeadas, do handshake TCP à resposta a incidentes. Cada tópico traz
           a aula escrita, o comando que se usa na prática e o erro que todo mundo comete. Progresso salvo no
           seu navegador, sem conta e sem servidor.</p>
         <div class="cta">
-          <a class="btn" href="#trilhas">iniciar trilha 01</a>
+          <button class="btn" id="continueBtn" type="button">começar a estudar →</button>
           <a class="btn ghost" href="#lab">abrir laboratório</a>
           <a class="btn ghost" href="#recursos">recursos grátis</a>
         </div>
         <div class="stats">
           <div><b class="count" data-to="6">0</b><span>trilhas</span></div>
           <div><b class="count" data-to="72">0</b><span>aulas</span></div>
-          <div><b class="count" data-to="139">0</b><span>horas</span></div>
+          <div><b class="count" data-to="139">0</b><span>horas estimadas</span></div>
           <div><b class="count" data-to="42">0</b><span>recursos</span></div>
         </div>
       </div>
+      <div class="hero-visual">
+  <svg id="globeFallback" viewBox="0 0 500 500" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="250" cy="250" r="190"/><ellipse cx="250" cy="250" rx="95" ry="190"/><ellipse cx="250" cy="250" rx="150" ry="190"/><ellipse cx="250" cy="250" rx="190" ry="65"/><ellipse cx="250" cy="250" rx="190" ry="130"/><path d="M60 250h380M250 60v380"/><ellipse cx="250" cy="250" rx="225" ry="80" transform="rotate(-30 250 250)"/></g></svg>
+  <canvas id="globe" aria-hidden="true"></canvas>
       <div class="term" aria-hidden="true">
         <div class="termbar"><i></i><i></i><i></i><span>recon — escopo autorizado</span></div>
         <div class="termbody" id="termOut"></div>
+      </div>
       </div>
     </div>
   </div>
@@ -463,10 +473,12 @@ footer{padding:46px 0 60px}
       </div>
       <p class="hint" id="trilhaHint">0 / 54 aulas</p>
     </div>
+    <div class="study-resume"><div><span class="tag">seu próximo passo</span><p id="nextLesson">Comece pelos fundamentos.</p></div><span>Um conceito. Uma prática. Todos os dias.</span></div>
     <div class="search rv">
       <input id="topicSearch" type="search" placeholder="buscar aula: xss, kerberos, argon2…" aria-label="Buscar aula">
       <button class="btn ghost sm" id="expandAll" type="button">abrir tudo</button>
     </div>
+    <p class="hint" id="searchStatus" role="status"></p>
     <div class="trilhas tiltwrap" id="trilhasBox"></div>
   </div>
 </section>
@@ -601,13 +613,24 @@ footer{padding:46px 0 60px}
     <div class="shead rv">
       <div>
         <span class="tag">0x08 · material externo</span>
-        <h2>Recursos gratuitos</h2>
-        <p>Tudo abaixo tem camada gratuita real — sem cartão, sem trial de sete dias. Fonte primária primeiro:
-          quando existir a documentação oficial ou a norma, ela vem antes do curso.</p>
+        <h2>Sua biblioteca de segurança</h2>
+        <p>Livros, videoaulas e laboratórios para acompanhar as trilhas. Comece pela seleção abaixo: cada material informa idioma, acesso e um primeiro passo.</p>
       </div>
-      <p class="hint">42 links verificados</p>
+      <p class="hint">curadoria consultada em 01 out 2026</p>
     </div>
-    <div class="reslist" id="resBox"></div>
+    <div class="library-toolbar">
+      <label>Buscar material<input id="resourceSearch" type="search" placeholder="Linux, criptografia, Harvard…"></label>
+      <label>Formato<select id="resourceType"><option value="">Todos os formatos</option><option>Livro</option><option>Curso</option><option>Laboratório</option><option>Guia</option></select></label>
+      <label>Idioma<select id="resourceLang"><option value="">Todos os idiomas</option><option>PT-BR</option><option>EN</option></select></label>
+      <label class="saved-filter"><input id="savedOnly" type="checkbox"> Só meus salvos</label>
+    </div>
+    <p class="hint" id="libraryStatus" role="status"></p>
+    <div class="library-grid" id="libraryBox"></div>
+    <p class="note">Materiais nos sites dos autores, com suas respectivas licenças. Links abrem em outra aba; a conclusão externa não é sincronizada com seu progresso aqui.</p>
+    <details class="more-resources"><summary>Explorar diretório complementar de ferramentas e comunidades</summary>
+      <p class="note">O diretório inclui serviços com planos pagos. Consulte as condições de acesso de cada plataforma.</p>
+      <div class="reslist" id="resBox"></div>
+    </details>
   </div>
 </section>
 
@@ -738,7 +761,7 @@ const T3 = {
  n:"Criptografia", lvl:"i", lvlTxt:"Intermediário", h:18,
  goal:"Saber escolher a primitiva certa e reconhecer o uso errado. Quase nenhuma falha real é quebra de algoritmo — é uso indevido de algoritmo bom.",
  lab:"Cifre a mesma imagem bitmap em AES-ECB e em AES-GCM e abra as duas. A versão em ECB continua reconhecível: essa é a aula inteira em uma imagem. Depois faça os oito primeiros desafios do Cryptopals.",
- links:[["Cryptopals Crypto Challenges","https://cryptopals.com/"],["OWASP Cryptographic Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html"],["OWASP Password Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"],["NIST SP 800-63B","https://pages.nist.gov/800-63-3/sp800-63b.html"],["RFC 9106 — Argon2","https://www.rfc-editor.org/rfc/rfc9106.html"]],
+ links:[["Cryptopals Crypto Challenges","https://cryptopals.com/"],["OWASP Cryptographic Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html"],["OWASP Password Storage Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"],["NIST SP 800-63B","https://pages.nist.gov/800-63-4/sp800-63b.html"],["RFC 9106 — Argon2","https://www.rfc-editor.org/rfc/rfc9106.html"]],
  tags:["AES-GCM","Ed25519","Argon2id","HMAC","PKI"],
  t:[
  {t:"Cifra simétrica: AES, tamanho de chave e modos",
@@ -871,7 +894,7 @@ const T6 = {
  n:"Defesa", lvl:"a", lvlTxt:"Avançado", h:18,
  goal:"Detectar, conter e aprender. Time azul não ganha impedindo tudo — ganha reduzindo o tempo entre a invasão e a resposta.",
  lab:"Monte um SIEM local (Wazuh ou a pilha Elastic), gere um ataque conhecido contra uma VM sua e escreva a regra Sigma que o detecta. Depois ajuste até zerar o falso positivo sem perder a detecção — esse ajuste é o trabalho real.",
- links:[["Sigma HQ","https://github.com/SigmaHQ/sigma"],["Wazuh Docs","https://documentation.wazuh.com/"],["NIST SP 800-61r2","https://csrc.nist.gov/pubs/sp/800/61/r2/final"],["MITRE D3FEND","https://d3fend.mitre.org/"],["The DFIR Report","https://thedfirreport.com/"],["CISA KEV","https://www.cisa.gov/known-exploited-vulnerabilities-catalog"],["LOLBAS","https://lolbas-project.github.io/"]],
+ links:[["Sigma HQ","https://github.com/SigmaHQ/sigma"],["Wazuh Docs","https://documentation.wazuh.com/"],["NIST SP 800-61r3","https://csrc.nist.gov/pubs/sp/800/61/r3/final"],["MITRE D3FEND","https://d3fend.mitre.org/"],["The DFIR Report","https://thedfirreport.com/"],["CISA KEV","https://www.cisa.gov/known-exploited-vulnerabilities-catalog"],["LOLBAS","https://lolbas-project.github.io/"]],
  tags:["Sigma","Wazuh","Velociraptor","NIST 800-61","MTTD"],
  t:[
  {t:"Fontes de log: sistema, rede, aplicação e nuvem",
@@ -1169,8 +1192,8 @@ const RECURSOS = [
   ["OWASP Top 10:2025","https://owasp.org/Top10/","A lista de referência de risco em aplicação web.",1],
   ["OWASP Cheat Sheet Series","https://cheatsheetseries.owasp.org/","Guia prático por tema. Consulta obrigatória.",1],
   ["MITRE ATT&CK","https://attack.mitre.org/","Catálogo de táticas e técnicas reais de adversário.",1],
-  ["NIST SP 800-61r2","https://csrc.nist.gov/pubs/sp/800/61/r2/final","O guia de resposta a incidente.",1],
-  ["NIST SP 800-63B","https://pages.nist.gov/800-63-3/sp800-63b.html","A norma moderna de autenticação e senha.",1],
+  ["NIST SP 800-61r3","https://csrc.nist.gov/pubs/sp/800/61/r3/final","O guia de resposta a incidente.",1],
+  ["NIST SP 800-63B","https://pages.nist.gov/800-63-4/sp800-63b.html","A norma moderna de autenticação e senha.",1],
   ["CISA KEV Catalog","https://www.cisa.gov/known-exploited-vulnerabilities-catalog","Vulnerabilidades com exploração confirmada.",1],
   ["CIS Benchmarks","https://www.cisecurity.org/cis-benchmarks","Referências de hardening por sistema.",1]
  ]],
@@ -1178,7 +1201,7 @@ const RECURSOS = [
   ["Cisco Networking Academy","https://www.netacad.com/","Curso de redes e de introdução à cibersegurança, gratuito.",1],
   ["Fortinet Training (NSE)","https://www.fortinet.com/training/cybersecurity-professionals","Trilha gratuita, do fundamento ao técnico.",1],
   ["IBM SkillsBuild","https://skillsbuild.org/","Cursos gratuitos com credencial digital.",1],
-  ["Google Cybersecurity (Coursera)","https://www.coursera.org/professional-certificates/google-cybersecurity","Certificado profissional; audível de graça.",1],
+  ["CS50 Cybersecurity (Harvard)","https://cs50.harvard.edu/cybersecurity/","Aulas abertas de cibersegurança; certificado verificado opcional pago.",1],
   ["AttackIQ Academy","https://www.academy.attackiq.com/","Cursos gratuitos focados em ATT&CK e simulação.",1],
   ["CS50 (Harvard)","https://cs50.harvard.edu/","Base de ciência da computação. Gratuito e excelente.",1]
  ]],
@@ -1241,6 +1264,7 @@ const SHEET = [
  ]]
 ];
 </script>
+<script src="assets/study-content.js"></script>
 <script>
 /* ============================ estado ============================ */
 const KEY = "perimetro.v2";
@@ -1255,8 +1279,13 @@ const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;
 
 /* ============================ tema ============================ */
 const themeBtn = $("#themeBtn");
-const applyTheme = t => { if(t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); };
-try { const st = localStorage.getItem("perimetro.theme"); if(st) applyTheme(st); } catch(e){}
+const applyTheme = t => {
+  if(t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme");
+  const dark = t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches);
+  themeBtn.setAttribute("aria-label", dark ? "Ativar tema claro" : "Ativar tema escuro");
+  themeBtn.title = themeBtn.getAttribute("aria-label");
+};
+try { applyTheme(localStorage.getItem("perimetro.theme")); } catch(e){ applyTheme(null); }
 themeBtn.addEventListener("click", () => {
   const rgb = getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(Number);
   const dark = (rgb[0]+rgb[1]+rgb[2]) < 330;
@@ -1319,6 +1348,8 @@ TRILHAS.forEach((m, i) => {
       '<div class="tbody">'+topic.d;
     if(topic.c) inner += '<pre class="code">'+topic.c+'</pre>';
     if(topic.w) inner += '<div class="gotcha"><b>erro comum</b>'+topic.w+'</div>';
+    const readings = topic.resources ? LIBRARY.filter(r=>topic.resources.includes(r.id)) : LIBRARY.filter(r=>r.tracks.includes(i)).slice(0,2);
+    inner += '<div class="lesson-readings"><h4>Continue aprendendo · material gratuito</h4>'+readings.map(r=>'<a href="'+r.url+'" target="_blank" rel="noopener noreferrer">'+r.title+' ↗ <small>'+r.type+' · '+r.lang+'</small></a>').join('')+'</div>';
     inner += '</div>';
     li.innerHTML = inner;
     const chk = li.querySelector(".tchk");
@@ -1326,7 +1357,15 @@ TRILHAS.forEach((m, i) => {
       if(e.target.checked){ S.done[id]=1; li.classList.add("done"); } else { delete S.done[id]; li.classList.remove("done"); }
       persist(S); refresh();
     });
-    const openTopic = () => li.classList.toggle("open");
+    li.id = "lesson-"+id;
+    const title = li.querySelector(".ttitle");
+    title.setAttribute("aria-expanded", "false");
+    title.setAttribute("aria-controls", "body-"+id);
+    li.querySelector(".tbody").id = "body-"+id;
+    const openTopic = () => {
+      title.setAttribute("aria-expanded", String(li.classList.toggle("open")));
+      if(li.classList.contains("open")){ S.lastLesson=id; persist(S); }
+    };
     li.querySelector(".ttitle").addEventListener("click", openTopic);
     li.querySelector(".texp").addEventListener("click", openTopic);
     ul.appendChild(li);
@@ -1354,14 +1393,27 @@ $("#expandAll").addEventListener("click", () => {
   $$(".mod").forEach(c => { c.setAttribute("open-state", allOpen?"1":"0"); c.querySelector("button").setAttribute("aria-expanded", String(allOpen)); });
   $("#expandAll").textContent = allOpen ? "fechar tudo" : "abrir tudo";
 });
+const normalizeSearch = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 $("#topicSearch").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase();
-  if(q){ allOpen = true; $$(".mod").forEach(c => { c.setAttribute("open-state","1"); }); }
-  $$(".topic").forEach(li => {
-    const hit = !q || li.dataset.search.includes(q);
-    li.style.display = hit ? "" : "none";
-    if(q && hit) li.classList.add("open"); else if(q) li.classList.remove("open");
+  const q = normalizeSearch(e.target.value.trim());
+  let hits = 0;
+  $$(".mod").forEach(card => {
+    let matches = 0;
+    card.querySelectorAll(".topic").forEach(li => {
+      const hit = !q || normalizeSearch(li.dataset.search).includes(q);
+      li.hidden = !hit;
+      if(hit) matches++;
+      li.classList.toggle("open", !!q && hit);
+      li.querySelector(".ttitle").setAttribute("aria-expanded", String(!!q && hit));
+    });
+    hits += matches;
+    card.hidden = matches === 0;
+    card.setAttribute("open-state", q && matches ? "1" : "0");
+    card.querySelector("button").setAttribute("aria-expanded", String(!!q && matches > 0));
   });
+  allOpen = !!q;
+  $("#expandAll").textContent = allOpen ? "fechar tudo" : "abrir tudo";
+  $("#searchStatus").textContent = q ? (hits ? hits+" aula(s) encontrada(s)" : "Nenhuma aula encontrada. Tente outro termo, como Linux ou senha.") : "";
 });
 
 /* inclinação 3D suave */
@@ -1390,6 +1442,7 @@ function refresh(){
     const num = document.querySelector('[data-num="'+i+'"]'); if(num) num.textContent = c+"/"+m.t.length;
   });
   refreshBadges();
+  if(window.refreshStudy) window.refreshStudy();
 }
 
 /* ============================ comandos (cheatsheet) ============================ */
@@ -1465,12 +1518,17 @@ OWASP.forEach(r => {
   const b = el("button","flip"); b.type="button"; b.setAttribute("aria-pressed","false");
   b.innerHTML =
     '<span class="inner">'+
-      '<span class="face"><span class="rid">'+r.id+'</span><span class="rname">'+r.n+'</span>'+
+      '<span class="front face" aria-hidden="false"><span class="rid">'+r.id+'</span><span class="rname">'+r.n+'</span>'+
         '<span class="rsub">'+r.s+'</span><span class="delta">'+r.delta+'</span><span class="hintflip">ver vetor e mitigação ▸</span></span>'+
-      '<span class="back face"><span class="rid">'+r.id+'</span>'+
-        '<p><b>Vetor:</b> '+r.v+'</p><p class="fix"><b>Corte:</b> '+r.f+'</p></span>'+
+      '<span class="back face" aria-hidden="true"><span class="rid">'+r.id+'</span>'+
+        '<span class="risk-text"><b>Vetor:</b> '+r.v+'</span><span class="risk-text fix"><b>Corte:</b> '+r.f+'</span><span class="hintflip">voltar ao resumo ▸</span></span>'+
     '</span>';
-  b.addEventListener("click", () => b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true"));
+  b.addEventListener("click", () => {
+    const flipped = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", String(flipped));
+    b.querySelector(".front").setAttribute("aria-hidden", String(flipped));
+    b.querySelector(".back").setAttribute("aria-hidden", String(!flipped));
+  });
   ob.appendChild(b);
 });
 
@@ -1510,7 +1568,6 @@ function pontua(){
   refreshBadges();
 }
 $("#resetQuiz").addEventListener("click", () => { S.quiz={}; persist(S); renderQuiz(); });
-renderQuiz();
 
 /* ============================ conquistas ============================ */
 const ICONS = {
@@ -1550,7 +1607,7 @@ RECURSOS.forEach(([grp, items]) => {
   const ul = el("ul");
   items.forEach(([nome,url,desc,free]) => {
     const li = el("li");
-    li.innerHTML = '<a href="'+url+'" target="_blank" rel="noopener">'+nome+(free?'<span class="free">grátis</span>':'')+'<small>'+desc+'</small></a>';
+    li.innerHTML = '<a href="'+url+'" target="_blank" rel="noopener">'+nome+'<small>'+desc+'</small></a>';
     ul.appendChild(li);
   });
   g.appendChild(ul); rbx.appendChild(g);
@@ -1567,8 +1624,10 @@ function renderGloss(f){
 $("#glossSearch").addEventListener("input", e => renderGloss(e.target.value));
 renderGloss("");
 
+renderQuiz();
 refresh();
 </script>
+<script src="assets/study.js"></script>
 <script>
 /* ============================ animações de página ============================ */
 const REDUZ = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1593,33 +1652,7 @@ $$(".count").forEach(n => {
   requestAnimationFrame(step);
 });
 
-/* título embaralhado */
-(() => {
-  const node = document.getElementById("scramble");
-  const palavras = ["defender","detectar","responder","auditar","conter","caçar"];
-  const chars = "!<>-_\\/[]{}—=+*^?#01xØ§";
-  if(REDUZ || !node) return;
-  let idx = 0;
-  const troca = () => {
-    const de = node.textContent, para = palavras[++idx%palavras.length];
-    const len = Math.max(de.length, para.length);
-    const plan = Array.from({length:len}, (_,i) => { const s = Math.floor(Math.random()*18); return { a:de[i]||"", b:para[i]||"", s, e:s+Math.floor(Math.random()*18)+8 }; });
-    let f = 0;
-    const tick = () => {
-      let out = "", done = 0;
-      for(const p of plan){
-        if(f>=p.e){ out += p.b; done++; }
-        else if(f>=p.s) out += '<span style="opacity:.55">'+chars[Math.floor(Math.random()*chars.length)]+"</span>";
-        else out += p.a;
-      }
-      node.innerHTML = out;
-      if(done===plan.length) return setTimeout(troca, 2600);
-      f++; requestAnimationFrame(tick);
-    };
-    tick();
-  };
-  setTimeout(troca, 2400);
-})();
+/* Título estático: evita mudanças de largura e quebras de linha durante a leitura. */
 
 /* terminal */
 (() => {
@@ -1635,15 +1668,34 @@ $$(".count").forEach(n => {
     ['<span class="p">$</span> gerar_relatorio --severidade alta', 400],
     ['  <span class="ok">3 achados registrados · escopo autorizado ✓</span>', 900]
   ];
+  // Todas as linhas ocupam espaço desde o início, mesmo durante a digitação.
+  const rows = linhas.map(([txt]) => {
+    const row = document.createElement("div");
+    row.innerHTML = txt+' <span class="caret"></span>';
+    row.style.visibility = REDUZ ? "visible" : "hidden";
+    row.querySelector(".caret").style.visibility = "hidden";
+    out.appendChild(row);
+    return row;
+  });
+  if(REDUZ) return;
   let i = 0;
   const escreve = () => {
-    if(i>=linhas.length){ setTimeout(()=>{ out.innerHTML=""; i=0; escreve(); }, 3200); return; }
-    const [txt, pausa] = linhas[i++];
-    const d = document.createElement("div"); d.innerHTML = txt+' <span class="caret"></span>';
-    out.appendChild(d);
-    const ant = out.children[out.children.length-2]; if(ant){ const c=ant.querySelector(".caret"); if(c) c.remove(); }
-    out.scrollTop = out.scrollHeight;
-    setTimeout(escreve, REDUZ?30:pausa);
+    if(i >= rows.length){
+      setTimeout(() => {
+        rows.forEach(row => {
+          row.style.visibility = "hidden";
+          row.querySelector(".caret").style.visibility = "hidden";
+        });
+        i = 0;
+        escreve();
+      }, 3200);
+      return;
+    }
+    if(i > 0) rows[i-1].querySelector(".caret").style.visibility = "hidden";
+    rows[i].style.visibility = "visible";
+    rows[i].querySelector(".caret").style.visibility = "visible";
+    const pausa = linhas[i++][1];
+    setTimeout(escreve, pausa);
   };
   escreve();
 })();
@@ -1652,11 +1704,14 @@ $$(".count").forEach(n => {
 /* ============================ globo 3D (WebGL puro) ============================ */
 (() => {
   const cv = document.getElementById("globe");
-  const gl = cv.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false });
+  const gl = cv.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: true });
   if(!gl){ cv.style.display = "none"; return; }
+  cv.addEventListener("webglcontextlost", e => { e.preventDefault(); cv.style.display="none"; document.getElementById("globeFallback").removeAttribute("hidden"); });
+  cv.addEventListener("webglcontextrestored", () => location.reload());
 
   /* --- shaders --- */
   const VS = [
+    "precision mediump float;",
     "attribute vec3 aPos; attribute float aT;",
     "uniform mat4 uMVP; uniform mat4 uMV; uniform float uSize;",
     "varying float vFade; varying float vT;",
@@ -1694,8 +1749,9 @@ $$(".count").forEach(n => {
   gl.bindAttribLocation(prog, 0, "aPos");
   gl.bindAttribLocation(prog, 1, "aT");
   gl.linkProgram(prog);
-  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){ cv.style.display = "none"; return; }
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){ console.warn("Globo: "+gl.getProgramInfoLog(prog)); cv.style.display = "none"; return; }
   gl.useProgram(prog);
+  document.getElementById("globeFallback").setAttribute("hidden", "");
   const U = n => gl.getUniformLocation(prog, n);
   const uMVP = U("uMVP"), uMV = U("uMV"), uSize = U("uSize"),
         uColor = U("uColor"), uHead = U("uHead"), uMode = U("uMode"), uAlpha = U("uAlpha");
@@ -1778,7 +1834,7 @@ $$(".count").forEach(n => {
   const recolor = () => {
     const cs = getComputedStyle(document.documentElement);
     CA = hex(cs.getPropertyValue("--accent"));
-    CL = hex(cs.getPropertyValue("--line-strong"));
+    CL = hex(cs.getPropertyValue("--globe-line"));
   };
   recolor();
   window.__globeRecolor = recolor;
@@ -1800,7 +1856,8 @@ $$(".count").forEach(n => {
   addEventListener("pointermove", e => { tx = (e.clientX / innerWidth - .5) * .5; ty = (e.clientY / innerHeight - .5) * .35; }, { passive: true });
 
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  // Store premultiplied RGB with correct coverage alpha for browser compositing.
+  gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(0, 0, 0, 0);
   gl.enableVertexAttribArray(0);
   gl.enableVertexAttribArray(1);
@@ -1817,11 +1874,11 @@ $$(".count").forEach(n => {
     requestAnimationFrame(frame);
     if(!visivel || W < 2) return;
     const dt = Math.min(.05, (now - last) / 1000); last = now;
-    spin += dt * (REDUZ ? 0.02 : 0.13);
-    mx += (tx - mx) * .05; my += (ty - my) * .05;
+    spin += dt * (REDUZ ? 0 : 0.13);
+    if(!REDUZ){ mx += (tx - mx) * .05; my += (ty - my) * .05; }
 
     const asp = W / H;
-    const xoff = asp > 1.35 ? 0.66 : 0;
+    const xoff = 0;
     const view = mul(trans(xoff, 0.02, -3.35), mul(rotX(-0.32 + my), rotY(spin + mx)));
     const mvp = mul(persp(1.02, asp, .1, 20), view);
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -1847,7 +1904,7 @@ $$(".count").forEach(n => {
     gl.uniform1f(uMode, 1); gl.uniform1f(uAlpha, 1);
     bind(bArc, bArcT);
     for(let i = 0; i < arcSpans.length; i++){
-      const head = ((now / 1000) * 0.34 + arcPhase[i]) % 1.5;
+      const head = ((REDUZ ? 0.5 : now / 1000) * 0.34 + arcPhase[i]) % 1.5;
       gl.uniform1f(uHead, head);
       gl.drawArrays(gl.LINE_STRIP, arcSpans[i].start, arcSpans[i].count);
     }
